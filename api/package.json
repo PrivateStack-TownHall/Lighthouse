@@ -1,0 +1,36 @@
+{
+  "name": "lighthouse-api",
+  "version": "1.1.1",
+  "scripts": {
+    "dev": "nodemon --watch src --watch kit --ext js,mjs,md,json --exec \"node --env-file-if-exists=.env src/server.js\"",
+    "build": "node scripts/check-source.js",
+    "start": "node --env-file-if-exists=.env src/server.js",
+    "typecheck": "node scripts/check-source.js",
+    "lint": "eslint src tests scripts",
+    "test": "node --test \"tests/*.test.js\"",
+    "test:watch": "node --test --watch \"tests/*.test.js\"",
+    "db:setup": "node --env-file-if-exists=.env scripts/db.js setup && node --env-file-if-exists=.env scripts/db.js seed",
+    "db:seed": "node --env-file-if-exists=.env scripts/db.js seed",
+    "db:reset": "node --env-file-if-exists=.env scripts/db.js reset"
+  },
+  "license": "UNLICENSED",
+  "type": "module",
+  "private": true,
+  "dependencies": {
+    "bcryptjs": "^3.0.3",
+    "cors": "^2.8.6",
+    "express": "^5.3.0",
+    "jsonwebtoken": "^9.0.3",
+    "swagger-ui-express": "^5.0.1",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@eslint/js": "^10.0.1",
+    "eslint": "^10.15.0",
+    "globals": "^17.14.0",
+    "nodemon": "^3.1.14"
+  },
+  "engines": {
+    "node": ">=22"
+  }
+}

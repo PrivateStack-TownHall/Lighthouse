@@ -1,0 +1,136 @@
+/*
+  Lighthouse - Contract Kit: tokens (Tailwind CSS v4). Same 4 layers as tokens.css.
+  Source colors (from the design system image): Deep Ocean Blue #183B56, Beacon Red #D94B45, Pearl White #F8F6F0.
+  The 50-900 scales are DERIVED (tints toward white, shades toward black); the source colors sit at
+  blue-800 and red-500. Contrast was computed (WCAG), see docs/DESIGN_SYSTEM.md.
+*/
+@import "tailwindcss";
+
+@theme {
+  /* 1. Brand scale: Deep Ocean Blue */
+  --color-brand-50:  #f3f5f7;
+  --color-brand-100: #e8ebee;
+  --color-brand-200: #d1d8dd;
+  --color-brand-300: #aebac4;
+  --color-brand-400: #8c9dab;
+  --color-brand-500: #698091;
+  --color-brand-600: #466278;
+  --color-brand-700: #2f4f67;
+  --color-brand-800: #183b56;   /* source: Deep Ocean Blue */
+  --color-brand-900: #132f45;
+
+  /* Accent scale: Beacon Red */
+  --color-beacon-50:  #fcf1f0;
+  --color-beacon-100: #f9e2e1;
+  --color-beacon-200: #f3c5c3;
+  --color-beacon-300: #eca5a2;
+  --color-beacon-400: #e37874;
+  --color-beacon-500: #d94b45;  /* source: Beacon Red. 4.16:1 on white: large text and decoration only */
+  --color-beacon-600: #ce4742;  /* CTA background: white text 4.56:1 */
+  --color-beacon-700: #a13733;
+  --color-beacon-800: #772926;
+  --color-beacon-900: #521c1a;
+
+  /* Neutrals (from the design system) */
+  --color-navy-900: #0f273a;
+  --color-gray-700: #445566;
+  --color-gray-500: #8a9bab;    /* 2.85:1 on white: placeholders and disabled only, never body text */
+  --color-gray-300: #d5dee6;
+  --color-gray-100: #eef2f6;
+  --color-pearl:    #f8f6f0;
+
+  /* Decorative accent for output tiles (from the generator mockup; not text) */
+  --color-violet-100: #eeeafb;
+  --color-violet-600: #6b4fc0;
+
+  /* Chrome: top bar fill (sampled from the edge of assets/brand/header-bg.webp) and page canvas */
+  --color-header-top: #001a3f;
+  --color-header-bottom: #04335f;
+  --color-canvas: #e9edf2;
+
+  /* 2. Semantic colors: components use ONLY these */
+  --color-primary: var(--color-beacon-600);            /* CTA: "Generate Contract" */
+  --color-primary-hover: var(--color-beacon-700);
+  --color-primary-light: var(--color-beacon-100);
+  --color-primary-foreground: #ffffff;
+
+  --color-secondary: var(--color-gray-100);
+  --color-secondary-foreground: var(--color-brand-800);
+  --color-accent: var(--color-brand-800);              /* chrome: header, sidebar */
+  --color-accent-foreground: #ffffff;
+
+  --color-background: var(--color-pearl);
+  --color-foreground: var(--color-navy-900);
+  --color-surface: #ffffff;
+  --color-muted: var(--color-gray-100);
+  --color-muted-foreground: var(--color-gray-700);
+  --color-border: var(--color-gray-300);
+
+  --color-success: #2e7d5b;                            /* 5.00:1 on white */
+  --color-warning: #d99a32;                            /* 2.44:1 on white: use --color-warning-foreground text */
+  --color-warning-foreground: var(--color-navy-900);   /* 6.28:1 on warning */
+  --color-info: #3478b8;                               /* 4.64:1 on white */
+  /* Destructive is deliberately NOT the CTA red: Delete must never look like Generate. */
+  --color-destructive: #b42318;                        /* 6.57:1 on white */
+  --color-destructive-foreground: #ffffff;
+  --color-danger-soft: #e15554;                        /* the design-system "Danger" swatch: icons and borders only (3.73:1) */
+
+  /* 3. Typography */
+  --font-display: "Manrope", ui-sans-serif, system-ui, sans-serif;     /* headings, UI, navigation, buttons */
+  --font-body: "Manrope", ui-sans-serif, system-ui, sans-serif;
+  --font-serif: "Lora", ui-serif, Georgia, serif;                       /* document preview (Markdown output) */
+  --font-mono: "JetBrains Mono", ui-monospace, monospace;
+
+  /* 4. Shape: 8pt scale, radius and shadows from the design system */
+  --radius-none: 0;
+  --radius-sm: 0.25rem;   /* 4  */
+  --radius-md: 0.5rem;    /* 8  */
+  --radius-lg: 0.75rem;   /* 12 */
+  --radius-xl: 1rem;      /* 16 */
+  --radius-2xl: 1.5rem;   /* 24 */
+  --shadow-xs: 0 1px 2px rgb(0 0 0 / 0.05);
+  --shadow-sm: 0 2px 4px rgb(0 0 0 / 0.08);
+  --shadow-md: 0 4px 12px rgb(0 0 0 / 0.10);
+  --shadow-lg: 0 8px 24px rgb(0 0 0 / 0.12);
+}
+
+/* Dark mode: override semantic tokens only (derived, not in the original design system image: review it) */
+:root[data-theme="dark"] {
+  --color-primary: var(--color-beacon-500);
+  --color-primary-hover: var(--color-beacon-400);
+  --color-primary-light: var(--color-beacon-900);
+  --color-secondary: #16324a;
+  --color-secondary-foreground: var(--color-brand-200);
+  --color-accent: var(--color-brand-700);
+  --color-background: var(--color-navy-900);
+  --color-foreground: var(--color-gray-100);
+  --color-surface: #132f45;
+  --color-muted: #16324a;
+  --color-muted-foreground: var(--color-gray-500);
+  --color-border: #24445e;
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-body);
+}
+h1, h2, h3, h4 {
+  font-family: var(--font-display);
+}
+/* Rendered Markdown / documents */
+.prose-document {
+  font-family: var(--font-serif);
+}
+
+/* Fonts are bundled with @fontsource (see index.css): no request to Google Fonts. */
+
+/* App chrome: the top bar continues into a navy band that fades into the canvas behind the two panels. */
+.bg-page {
+  background: linear-gradient(180deg, var(--color-header-bottom) 0, var(--color-brand-800) 90px, var(--color-brand-500) 330px, var(--color-canvas) 640px) no-repeat, var(--color-canvas);
+}
+/* Top bar fill. From lg the header draws the scene (assets/brand/header-bg.webp) in its own layer, left of the icons. */
+.bg-topbar {
+  background-color: var(--color-header-top);
+  background-image: linear-gradient(180deg, var(--color-header-top), var(--color-header-bottom));
+}

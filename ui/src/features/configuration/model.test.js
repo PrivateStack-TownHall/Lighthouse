@@ -1,0 +1,92 @@
+import { describe, expect, test } from 'vitest';
+import { AVAILABLE_OUTPUTS, defaultConfig, errorsByPath, hydrate, reducer, sanitize, UI_TOOLS } from './model.js';
+
+describe('configuration model', () => {
+  test('defaults: Lighthouse 123, CMS, no features, fixed UI tools', () => {
+    const s = sanitize(defaultConfig());
+    expect(s.project.name).toBe('Lighthouse 123');
+    expect(s.project.domain).toBe('cms');
+    expect(s.project).not.toHaveProperty('features');
+    expect(s.project).not.toHaveProperty('category');
+    expect(s.project.version).toBe('1.0.0');
+    expect(s.stack.tools).toEqual(UI_TOOLS);
+    expect(s.outputs).toEqual(AVAILABLE_OUTPUTS);
+    expect(s.outputs).toHaveLength(6);
+  });
+
+  test('API-only projects send no frontend, CSS or UI tools', () => {
+    const c = reducer(defaultConfig(), { type: 'project', field: 'type', value: 'api' });
+    const s = sanitize(c);
+    expect(s.stack.frontend).toBeNull();
+    expect(s.stack.css).toBeNull();
+    expect(s.stack.tools).toEqual([]);
+    expect(s.project.folders).toEqual({ api: 'api', ui: null });
+  });
+
+  test('frontend-only excludes backend choices and preserves custom folders after restoring', () => {
+    let c = reducer(defaultConfig(), { type: 'project', field: 'type', value: 'frontend' });
+    c = reducer(c, { type: 'folder', layer: 'ui', value: ' client ' });
+    const s = sanitize(c);
+    expect(s.project.folders).toEqual({ api: null, ui: 'client' });
+    expect(s.stack.backend).toBeNull();
+    expect(s.stack.orm).toBeNull();
+    expect(s.stack.database).toBeNull();
+    expect(s.stack.frontend).toBe('react-vite');
+    expect(hydrate(s).project.folders.ui).toBe('client');
+    const full = sanitize(reducer(hydrate(s), { type: 'project', field: 'type', value: 'web-app' }));
+    expect(full.stack.backend).toBe('express');
+    expect(full.project.folders).toEqual({ api: 'api', ui: 'client' });
+    expect(hydrate({}).project.folders).toEqual({ api: 'api', ui: 'ui' });
+  });
+
+  test('slug follows the name until edited', () => {
+    let c = reducer(defaultConfig(), { type: 'project', field: 'name', value: 'Order Desk' });
+    expect(c.project.slug).toBe('order-desk');
+    c = reducer(c, { type: 'project', field: 'name', value: 'Order Desk 2', slugTouched: true });
+    expect(c.project.slug).toBe('order-desk');
+  });
+
+  test('editing the stack after a preset switches back to custom', () => {
+    const preset = { id: 'nest-prisma-vite', stack: { language: 'typescript', frontend: 'react-vite', css: 'tailwindcss', backend: 'nestjs', orm: 'prisma', database: 'postgresql', tools: ['axios'] } };
+    let c = reducer(defaultConfig(), { type: 'preset', preset });
+    expect(c.preset).toBe('nest-prisma-vite');
+    expect(c.stack).not.toHaveProperty('tools');
+    c = reducer(c, { type: 'stack', field: 'database', value: 'mysql' });
+    expect(c.preset).toBe('custom');
+  });
+
+  test('an API-only preset switches the project type', () => {
+    const c = reducer(defaultConfig(), { type: 'preset', preset: { id: 'nest-prisma-api', stack: { language: 'typescript', frontend: null, css: null, backend: 'nestjs', orm: 'prisma', database: 'postgresql', tools: [] } } });
+    expect(c.project.type).toBe('api');
+  });
+
+  test('toggleOutput keeps the catalog order', () => {
+    let c = reducer(defaultConfig(), { type: 'toggleOutput', id: 'PROJECT_CONTRACT.md' });
+    c = reducer(c, { type: 'toggleOutput', id: 'PROJECT_CONTRACT.md' });
+    expect(c.outputs[0]).toBe('PROJECT_CONTRACT.md');
+  });
+
+  test('older saved projects select the newly available documents once', () => {
+    const c = hydrate({ outputs: ['PROJECT_CONTRACT.md', 'PROMPTS/'] });
+    expect(c.outputs).toEqual(['PROJECT_CONTRACT.md', 'SYSTEM_DESIGN.md', 'DEVELOPMENT_STANDARDS.md', 'PROMPTS/']);
+    const deselected = reducer(c, { type: 'toggleOutput', id: 'SYSTEM_DESIGN.md' });
+    const restored = hydrate(sanitize(deselected));
+    expect(restored.outputs).not.toContain('SYSTEM_DESIGN.md');
+    expect(restored.outputs).toContain('DEVELOPMENT_STANDARDS.md');
+  });
+
+  test('errorsByPath maps generator messages to fields', () => {
+    const { byPath, general } = errorsByPath(['`project.name` is required (max 60 characters).', 'Feature "x" is listed twice.']);
+    expect(byPath['project.name']).toBe('Is required (max 60 characters).');
+    expect(general).toEqual(['Feature "x" is listed twice.']);
+  });
+
+  test('hydrate drops tools and old fields of a saved config', () => {
+    const c = hydrate({ project: { name: 'x', features: [{ name: 'A' }], category: 3, nn: 2, version: '1.0.0' }, stack: { backend: 'nestjs', tools: ['axios'] } });
+    expect(c.project).not.toHaveProperty('features');
+    expect(c.project).not.toHaveProperty('nn');
+    expect(c.project.version).toBe('');
+    expect(c.stack).not.toHaveProperty('tools');
+    expect(c.stack.backend).toBe('nestjs');
+  });
+});

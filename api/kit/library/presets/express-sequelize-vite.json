@@ -1,0 +1,6 @@
+{
+  "id": "express-sequelize-vite",
+  "name": "Express + Sequelize + React (Vite)",
+  "description": "JavaScript API (the kit's Express code is JavaScript). The kit front end is TypeScript, so this preset reports a warning until the language is chosen per layer.",
+  "stack": { "language": "javascript", "frontend": "react-vite", "css": "tailwindcss", "backend": "express", "orm": "sequelize", "database": "postgresql", "tools": ["axios"] }
+}

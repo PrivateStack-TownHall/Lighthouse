@@ -1,0 +1,24 @@
+{
+  "scripts": {
+    "dev": "prisma generate && nest start --watch",
+    "start:dev": "npm run dev",
+    "build": "prisma generate && nest build",
+    "start": "node dist/main",
+    "typecheck": "prisma generate && tsc --noEmit",
+    "lint": "eslint \"{src,test,prisma}/**/*.ts\"",
+    "test": "prisma generate && jest",
+    "test:watch": "jest --watch",
+    "test:cov": "jest --coverage",
+    "test:e2e": "jest --config ./test/jest-e2e.json --runInBand",
+    "db:create": "node scripts/create-database.mjs",
+    "db:migrate": "prisma migrate dev",
+    "db:migrate:deploy": "prisma migrate deploy",
+    "db:seed": "ts-node --transpile-only prisma/seed.ts",
+    "db:reset": "prisma migrate reset --force",
+    "db:setup": "npm run db:create && npm run db:migrate && npm run db:seed",
+    "db:studio": "prisma studio",
+    "docker:up": "docker compose --env-file .env.docker --profile db --profile api up -d",
+    "docker:down": "docker compose --env-file .env.docker down",
+    "postinstall": "prisma generate"
+  }
+}

@@ -1,0 +1,225 @@
+{
+  "generatedOn": "2026-11-23",
+  "levels": {
+    "supported": "The Contract Kit has code or templates for this combination.",
+    "allowed": "No kit code. Docs exist for each member; write the glue and mark it unverified.",
+    "warn": "Works in principle but needs a conversion or has an open point.",
+    "unsupported": "The kit cannot produce this. Ask the user to change the choice."
+  },
+  "choices": {
+    "language": [
+      "javascript",
+      "typescript"
+    ],
+    "frontend": [
+      "react-vite",
+      "nextjs"
+    ],
+    "css": [
+      "tailwindcss",
+      "bootstrap"
+    ],
+    "backend": [
+      "express",
+      "nestjs"
+    ],
+    "orm": [
+      "sequelize",
+      "prisma",
+      "mongoose"
+    ],
+    "database": [
+      "postgresql",
+      "mysql",
+      "mongodb"
+    ]
+  },
+  "tools": [
+    "axios",
+    "jsonwebtoken",
+    "bcryptjs",
+    "zod",
+    "tanstack-query",
+    "eslint"
+  ],
+  "toolRequires": {
+    "axios": [
+      "frontend"
+    ],
+    "tanstack-query": [
+      "frontend"
+    ]
+  },
+  "alwaysInclude": [
+    "core-rules",
+    "zod",
+    "eslint",
+    "bcryptjs",
+    "jsonwebtoken"
+  ],
+  "rules": [
+    {
+      "when": {
+        "backend": "nestjs",
+        "language": "javascript"
+      },
+      "level": "unsupported",
+      "message": "The kit has no JavaScript NestJS code. Choose TypeScript."
+    },
+    {
+      "when": {
+        "backend": "nestjs",
+        "orm": "sequelize"
+      },
+      "level": "allowed",
+      "message": "No kit template for NestJS + Sequelize (it needs a Nest-specific Sequelize package: not verified)."
+    },
+    {
+      "when": {
+        "backend": "express",
+        "orm": "prisma"
+      },
+      "level": "allowed",
+      "message": "No kit template for Express + Prisma. The observability router only needs a checkDatabase function."
+    },
+    {
+      "when": {
+        "orm": "prisma",
+        "language": "javascript"
+      },
+      "level": "warn",
+      "message": "The Prisma 7 quickstart is TypeScript and ESM; JavaScript use was not verified."
+    },
+    {
+      "when": {
+        "orm": "sequelize",
+        "language": "typescript"
+      },
+      "level": "allowed",
+      "message": "The kit's Express code is JavaScript; the Sequelize templates are JavaScript too."
+    },
+    {
+      "when": {
+        "backend": "express",
+        "language": "typescript"
+      },
+      "level": "allowed",
+      "message": "The kit's Express code is JavaScript (ESM). Convert the files to .ts."
+    },
+    {
+      "when": {
+        "frontend": "react-vite",
+        "language": "javascript"
+      },
+      "level": "warn",
+      "message": "The kit front end files are .ts/.tsx. Convert them or choose TypeScript."
+    },
+    {
+      "when": {
+        "frontend": "nextjs",
+        "language": "javascript"
+      },
+      "level": "warn",
+      "message": "The kit front end files are .ts/.tsx. Convert them or choose TypeScript."
+    },
+    {
+      "when": {
+        "frontend": "nextjs",
+        "css": "tailwindcss"
+      },
+      "level": "allowed",
+      "message": "Tailwind setup for Next.js was not fetched (the Vite guide was)."
+    },
+    {
+      "when": {
+        "orm": "sequelize",
+        "database": "mongodb"
+      },
+      "level": "unsupported",
+      "message": "Sequelize does not support MongoDB (SQL dialects only). Choose Mongoose."
+    },
+    {
+      "when": {
+        "orm": "prisma",
+        "database": "mongodb"
+      },
+      "level": "unsupported",
+      "message": "Prisma 7 does not support MongoDB yet (prisma.io recommends Prisma 6.19), and the library documents Prisma 7 only. Choose Mongoose."
+    },
+    {
+      "when": {
+        "orm": "mongoose",
+        "database": "postgresql"
+      },
+      "level": "unsupported",
+      "message": "Mongoose works with MongoDB only."
+    },
+    {
+      "when": {
+        "orm": "mongoose",
+        "database": "mysql"
+      },
+      "level": "unsupported",
+      "message": "Mongoose works with MongoDB only."
+    },
+    {
+      "when": {
+        "database": "mysql"
+      },
+      "level": "allowed",
+      "message": "No kit template for MySQL: the compose file, db:create and the env example are PostgreSQL. Adapt them."
+    },
+    {
+      "when": {
+        "database": "mongodb"
+      },
+      "level": "warn",
+      "message": "No kit template for MongoDB and no migration CLI in the library: the compose file and db:* scripts need changes, and UUID ids replace ObjectIds (FR-009)."
+    },
+    {
+      "when": {
+        "backend": "nestjs",
+        "orm": "mongoose"
+      },
+      "level": "allowed",
+      "message": "No kit template for NestJS + Mongoose (a Nest-specific package exists: not verified)."
+    },
+    {
+      "when": {
+        "css": "bootstrap"
+      },
+      "level": "warn",
+      "message": "The kit design tokens (tokens.css) are a Tailwind v4 @theme file: map the same semantic tokens to Bootstrap variables yourself."
+    },
+    {
+      "when": {
+        "frontend": "nextjs",
+        "css": "bootstrap"
+      },
+      "level": "allowed",
+      "message": "Bootstrap setup for Next.js was not fetched (the Vite guide was)."
+    }
+  ],
+  "supportedCombos": [
+    {
+      "id": "express-sequelize-postgresql",
+      "match": {
+        "backend": "express",
+        "orm": "sequelize",
+        "database": "postgresql"
+      },
+      "doc": "combos/express-sequelize-postgresql.md"
+    },
+    {
+      "id": "nestjs-prisma-postgresql",
+      "match": {
+        "backend": "nestjs",
+        "orm": "prisma",
+        "database": "postgresql",
+        "language": "typescript"
+      },
+      "doc": "combos/nestjs-prisma-postgresql.md"
+    }
+  ],
+  "unknownChoice": "unsupported"
+}

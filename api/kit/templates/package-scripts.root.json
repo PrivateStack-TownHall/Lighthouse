@@ -1,0 +1,19 @@
+{
+  "_note": "Root package.json of an A1/A3 app: delegates to api/ and ui/ only. A2 (API only) has no root file, use the backend template directly.",
+  "scripts": {
+    "install:all": "npm --prefix api install && npm --prefix ui install",
+    "dev:api": "npm --prefix api run dev",
+    "dev:ui": "npm --prefix ui run dev",
+    "build:api": "npm --prefix api run build",
+    "build:ui": "npm --prefix ui run build",
+    "typecheck": "npm --prefix api run typecheck && npm --prefix ui run typecheck",
+    "lint": "npm --prefix api run lint && npm --prefix ui run lint",
+    "test": "npm --prefix api test && npm --prefix ui test",
+    "db:setup": "npm --prefix api run db:setup",
+    "db:migrate": "npm --prefix api run db:migrate",
+    "db:seed": "npm --prefix api run db:seed",
+    "db:reset": "npm --prefix api run db:reset",
+    "docker:up": "docker compose --env-file .env.docker --profile db --profile api --profile ui up -d",
+    "docker:down": "docker compose --env-file .env.docker down"
+  }
+}

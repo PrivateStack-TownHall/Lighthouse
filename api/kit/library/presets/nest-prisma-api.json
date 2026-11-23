@@ -1,0 +1,6 @@
+{
+  "id": "nest-prisma-api",
+  "name": "NestJS + Prisma (API only, A2)",
+  "description": "For category 2 (A2): no frontend and no CSS.",
+  "stack": { "language": "typescript", "frontend": null, "css": null, "backend": "nestjs", "orm": "prisma", "database": "postgresql", "tools": [] }
+}

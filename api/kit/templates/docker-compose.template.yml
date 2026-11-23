@@ -1,0 +1,60 @@
+# Copy next to the app. Create .env.docker (see PORT_* below). Ports come from docs/PORTS.md.
+# Start only what you need:
+#   docker compose --env-file .env.docker --profile db up -d
+#   docker compose --env-file .env.docker --profile db --profile api up -d
+#   docker compose --env-file .env.docker --profile db --profile api --profile ui up -d
+#
+# .env.docker example (Orange LMS = category 1, NN 01):
+#   COMPOSE_PROJECT_NAME=a1-orange-lms
+#   APP_SLUG=orange-lms
+#   PORT_API=3101
+#   PORT_UI=5101
+#   PORT_DB=2101
+#   POSTGRES_PASSWORD=postgres
+
+name: ${COMPOSE_PROJECT_NAME}
+
+services:
+  db:
+    profiles: ["db"]
+    image: postgres:16-alpine
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+      POSTGRES_DB: app_db
+    ports:
+      - "${PORT_DB}:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres -d app_db"]
+      interval: 5s
+      timeout: 3s
+      retries: 10
+
+  api:
+    profiles: ["api"]
+    build: ./api            # adjust to the API folder
+    environment:
+      NODE_ENV: production
+      PORT: ${PORT_API}
+      DATABASE_URL: postgresql://postgres:${POSTGRES_PASSWORD}@db:5432/app_db
+      JWT_SECRET: ${JWT_SECRET}
+      CORS_ORIGIN: http://localhost:${PORT_UI}
+    ports:
+      - "${PORT_API}:${PORT_API}"
+    depends_on:
+      db:
+        condition: service_healthy
+
+  ui:
+    profiles: ["ui"]
+    build: ./ui             # adjust to the UI folder
+    ports:
+      - "${PORT_UI}:${PORT_UI}"
+    depends_on:
+      - api
+
+volumes:
+  pgdata:
+    name: ${APP_SLUG}-pgdata

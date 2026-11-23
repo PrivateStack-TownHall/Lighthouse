@@ -1,0 +1,24 @@
+{
+  "_note": "Vite: use the vite variant. Next.js: use the next variant. Port = 5 + category + NN.",
+  "vite": {
+    "scripts": {
+      "dev": "vite --port 5101",
+      "build": "tsc -b && vite build",
+      "start": "vite preview --port 5101",
+      "typecheck": "tsc --noEmit",
+      "lint": "eslint .",
+      "test": "vitest run",
+      "test:watch": "vitest"
+    }
+  },
+  "next": {
+    "scripts": {
+      "dev": "next dev -p 5101",
+      "build": "next build",
+      "start": "next start -p 5101",
+      "typecheck": "tsc --noEmit",
+      "lint": "eslint",
+      "test": "vitest run"
+    }
+  }
+}

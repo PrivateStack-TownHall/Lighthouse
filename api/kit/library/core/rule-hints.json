@@ -1,0 +1,21 @@
+{
+  "_note": "Heuristics, not proof. A Custom Rule whose text matches one of these patterns (case-insensitive) is flagged as a possible conflict with the Fixed Rule. The user rewords it or declares `overrides` with a reason.",
+  "FR-001": ["without (the )?envelope", "raw (json|array) response", "return \\{ ?data ?\\} only"],
+  "FR-002": ["(message|error code)s? in (bahasa|indonesian)", "lower ?case error code"],
+  "FR-004": ["/v[0-9]+\\b", "api version(ing)? (prefix|segment|in the url)", "singular route", "camel ?case route"],
+  "FR-006": ["(monitoring|activities).{0,40}(public|open|without (auth|token|login))"],
+  "FR-007": ["(public|open).{0,40}(email|phone)", "unmasked name"],
+  "FR-008": ["limit.{0,20}(200|250|500|1000|unlimited)", "page_?size", "per_page", "\\boffset\\b"],
+  "FR-009": ["auto[- ]?increment", "serial (primary key|id)", "integer (primary key|id)", "local time", "\\bwib\\b", "unix timestamp"],
+  "FR-010": ["\\bdecimal\\b", "\\bfloat\\b", "money as (a )?string", "\\bcents?\\b"],
+  "FR-011": ["snake_case (json|response|field|key)", "camel ?case column"],
+  "FR-012": ["session cookie", "super ?admin", "\\bowner role\\b", "/auth/signin", "token (lifetime|expiry) of"],
+  "FR-013": ["\\bbcrypt\\b(?!js)", "argon2", "\\bmd5\\b", "\\bsha-?1\\b", "plain ?text password"],
+  "FR-014": ["\\byarn\\b", "\\bpnpm\\b", "\\bbun\\b", "\\bjoi\\b", "\\byup\\b", "class-validator", "\\bbiome\\b", "\\boxlint\\b"],
+  "FR-015": ["port (3000|3001|8000|8080|5173|5432)\\b"],
+  "FR-017": ["\\butils/", "folders? per type", "\\bcontrollers/ folder"],
+  "FR-018": ["\\{ ?data: ?null ?\\}", "logic in (the )?controller"],
+  "FR-019": ["raw hex", "inline (style|colou?r)", "axios (directly )?in (a )?component", "\\bfetch\\("],
+  "FR-020": ["no tests", "skip(ping)? tests", "without swagger"],
+  "FR-022": ["(by hand|manually).{0,20}(scaffold|set ?up|create the project)", "without the cli"]
+}

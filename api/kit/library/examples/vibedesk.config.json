@@ -1,0 +1,58 @@
+{
+  "schemaVersion": 1,
+  "generatedOn": "2026-11-23",
+  "preset": "custom",
+  "project": {
+    "name": "vibeDesk",
+    "slug": "vibedesk",
+    "category": 3,
+    "nn": 2,
+    "type": "web-app",
+    "purpose": "commercial",
+    "version": "1.0.0",
+    "description": "A web-based CMS and backoffice for managing articles, media, and content.",
+    "features": [
+      {
+        "name": "Categories",
+        "resource": "categories",
+        "description": "Staff create, rename and remove the categories that group articles."
+      },
+      {
+        "name": "Articles",
+        "resource": "articles",
+        "description": "Staff write articles with a title, slug, body and category, save them as draft, publish and archive them."
+      },
+      {
+        "name": "Pages",
+        "resource": "pages",
+        "description": "Staff edit static pages such as About and Contact, each with a title, slug and body."
+      }
+    ],
+    "parkingLot": [
+      "Media library (file uploads need a storage library that is not in the Contract Kit library yet)"
+    ]
+  },
+  "stack": {
+    "language": "javascript",
+    "frontend": "react-vite",
+    "css": "tailwindcss",
+    "backend": "express",
+    "orm": "sequelize",
+    "database": "postgresql",
+    "tools": [
+      "axios",
+      "tanstack-query"
+    ]
+  },
+  "customRules": [
+    {
+      "text": "Article and page slugs are unique and created with slugify from helpers/."
+    }
+  ],
+  "outputs": [
+    "PROJECT_CONTRACT.md",
+    "ARCHITECTURE.md",
+    "MASTER_PROMPT.md",
+    "PROMPTS/"
+  ]
+}

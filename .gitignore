@@ -1,0 +1,11 @@
+node_modules/
+dist/
+.env
+*.log
+.DS_Store
+# JSON database: data, not code (npm run db:setup creates the files)
+database/*.json
+database/*.tmp
+.forgeguard/
+.env.*
+!.env.example

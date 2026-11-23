@@ -1,0 +1,24 @@
+{
+  "name": "lighthouse",
+  "version": "1.1.1",
+  "private": true,
+  "description": "Lighthouse \u2013 Contract Kit: Contract & Prompt Generator (A1 #02).",
+  "scripts": {
+    "install:all": "npm --prefix api install && npm --prefix ui install",
+    "setup": "npm run install:all && node scripts/setup-env.mjs && npm run db:setup",
+    "dev": "node scripts/dev.mjs",
+    "dev:api": "npm --prefix api run dev",
+    "dev:ui": "npm --prefix ui run dev",
+    "build:api": "npm --prefix api run build",
+    "build:ui": "npm --prefix ui run build",
+    "typecheck": "npm --prefix api run typecheck && npm --prefix ui run typecheck",
+    "lint": "npm --prefix api run lint && npm --prefix ui run lint",
+    "test": "npm --prefix api test && npm --prefix ui test",
+    "db:setup": "npm --prefix api run db:setup",
+    "db:seed": "npm --prefix api run db:seed",
+    "db:reset": "npm --prefix api run db:reset"
+  },
+  "engines": {
+    "node": ">=22.12"
+  }
+}

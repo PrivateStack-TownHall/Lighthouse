@@ -7,7 +7,7 @@ import { ApiError } from '../lib/api-client.js';
 import { toastMessageFor } from '../lib/error-messages.js';
 import { stableStringify } from '../helpers/index.js';
 import { ConfigurationCard, useOptions, useConfigState, useCompatibility, errorsByPath } from '../features/configuration/index.js';
-import { GeneratePanel, Stepper, OutputList, ResultSummary, ExportPanel, PreviewModal, useGenerate, filesOf, downloadText, downloadZip, copyText, joinFiles } from '../features/generator/index.js';
+import { GeneratePanel, Stepper, OutputList, ResultSummary, ExportPanel, PreviewModal, useGenerate, filesOf, downloadText, downloadZip, exportProjectZip, copyText, joinFiles } from '../features/generator/index.js';
 import { useAutosave } from '../features/projects/index.js';
 import { LoginPage } from './LoginPage.jsx';
 
@@ -56,15 +56,17 @@ export function WorkspacePage() {
     onCopy: async (o) => { const files = filesOf(result, o.id); await copyText(files.length > 1 ? joinFiles(files) : files[0].content); toast.success(`${o.title} copied`); },
     onDownload: async (o) => {
       const files = filesOf(result, o.id);
-      if (o.id.endsWith('/')) await downloadZip(files, slug, `${slug}-prompts.zip`);
+      if (o.id.endsWith('/')) await downloadZip(result.files.filter((f) => f.path.startsWith(o.id) || f.path.startsWith('docs/') || f.path.startsWith('lighthouse.')), slug, `${slug}-prompts.zip`);
       else downloadText(files[0].content, files[0].path);
     },
   };
   const exportZip = async () => {
     setZipping(true);
-    try { await downloadZip(result.files, slug, `${slug}-contract-kit.zip`); toast.success('ZIP exported'); } finally { setZipping(false); }
+    try { await exportProjectZip(result, slug, `${slug}-project.zip`); toast.success('ZIP exported and saved in docs/generated-results'); }
+    catch (e) { toast.error(toastMessageFor(e)); }
+    finally { setZipping(false); }
   };
-  const exportMd = () => { downloadText(result.markdown, `${slug}-contract-kit.md`); toast.success('Markdown exported'); };
+  const exportMd = () => { downloadText(result.markdown, `${slug}-project.md`); toast.success('Markdown exported'); };
 
   return (
     // One window on wide screens: the page never scrolls, each panel scrolls inside (overflow-y).

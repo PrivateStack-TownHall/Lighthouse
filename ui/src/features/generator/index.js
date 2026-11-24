@@ -6,4 +6,4 @@ export { ExportPanel } from './components/ExportPanel.jsx';
 export { PreviewModal } from './components/PreviewModal.jsx';
 export { useGenerate } from './hooks.js';
 export { filesOf } from './outputs.js';
-export { downloadText, downloadZip, copyText, joinFiles } from './export.js';
+export { downloadText, downloadZip, exportProjectZip, copyText, joinFiles } from './export.js';

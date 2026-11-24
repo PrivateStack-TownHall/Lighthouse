@@ -62,7 +62,7 @@ export function PreviewModal({ output, files, onClose, onCopyFile, onDownloadFil
               <Icon className="mb-3 hidden size-8 md:block" strokeWidth={1.5} aria-hidden />
               <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-brand-200">Document preview</p>
               <p className="mt-1 font-display text-lg font-extrabold leading-snug md:text-xl">{output?.title}</p>
-              <p className="mt-2 hidden text-xs text-brand-200 md:block">{files.length} {many ? 'files' : 'document'} · Contract Kit</p>
+              <p className="mt-2 hidden text-xs text-brand-200 md:block">{files.length} {many ? 'files' : 'document'} · Project Package</p>
             </div>
 
           </div>

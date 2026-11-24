@@ -7,7 +7,7 @@ export function GeneratePanel({ onGenerate, loading, disabledReason }) {
       <div className="flex flex-wrap items-center gap-4">
         <Files className="size-10 shrink-0" strokeWidth={1.3} aria-hidden />
         <div className="min-w-0 flex-1">
-          <h2 className="font-display text-xl font-extrabold leading-tight tracking-tight">Generate Contract Kit</h2>
+          <h2 className="font-display text-xl font-extrabold leading-tight tracking-tight">Generate Project Package</h2>
           <p className="text-sm text-brand-100">Create a complete and consistent project contract package based on your configuration.</p>
         </div>
         <motion.button whileHover={disabledReason ? undefined : { scale: 1.03 }} whileTap={disabledReason ? undefined : { scale: 0.97 }}

@@ -1,9 +1,12 @@
 import { randomUUID } from 'node:crypto';
+import { mkdir, writeFile } from 'node:fs/promises';
+import { join, resolve } from 'node:path';
 import { AppError } from '../../common/contract/response.js';
 import { buildPagination } from '../../common/pagination/pagination.js';
+import { slugify } from '../../helpers/index.js';
 import { generate, loadLibrary, exportMarkdown, KIT_VERSION, OUTPUTS, PURPOSES, TYPES, DOMAINS } from '../../../kit/library/generate.mjs';
 
-/** The six selectable outputs supported by the Contract Kit generator. */
+/** The six selectable outputs supported by the project generator. */
 export const OUTPUT_CATALOG = [
   { id: 'PROJECT_CONTRACT.md', title: 'Project Contract', description: 'Project overview, scope, API contract, and technical agreement.', format: 'MD' },
   { id: 'ARCHITECTURE.md', title: 'Architecture Documentation', description: 'System architecture, folder structure, and component design.', format: 'MD' },
@@ -15,7 +18,7 @@ export const OUTPUT_CATALOG = [
 
 const today = () => new Date().toISOString().slice(0, 10);
 
-export async function createGeneratorService({ store, kitRoot }) {
+export async function createGeneratorService({ store, kitRoot, exportDir = resolve(kitRoot, '../../docs/generated-results') }) {
   const lib = await loadLibrary(kitRoot);
   const docMeta = (id) => {
     const d = lib.docs[id];
@@ -73,11 +76,24 @@ export async function createGeneratorService({ store, kitRoot }) {
     return { items, pagination: buildPagination(rows.length, page, limit) };
   }
 
+  async function saveZip(id, bytes) {
+    const record = (await store.read('generations')).find((row) => row.id === id);
+    if (!record) throw new AppError(404, 'Generation not found', 'NOT_FOUND');
+    if (!Buffer.isBuffer(bytes) || bytes.length < 4 || bytes.toString('ascii', 0, 4) !== 'PK\x03\x04') {
+      throw new AppError(400, 'A ZIP archive is required', 'BAD_REQUEST');
+    }
+    const name = slugify(record.project_name).slice(0, 60) || 'project';
+    const filename = `${name}-${id}-${randomUUID()}.zip`;
+    await mkdir(exportDir, { recursive: true });
+    await writeFile(join(exportDir, filename), bytes, { flag: 'wx' });
+    return { filename };
+  }
+
   const activitySource = {
     collect: async (limit) => (await store.read('generations')).slice(-limit).reverse().map((r) => ({
       id: `generation-${r.id}`, type: 'CONTRACT_GENERATED', entity: 'Generation', title: r.project_name || 'Untitled',
       description: `${r.files.length} files, compatibility ${r.level.toUpperCase()}`, createdAt: r.created_at })),
   };
 
-  return { options, check, run, list, activitySource };
+  return { options, check, run, list, saveZip, activitySource };
 }

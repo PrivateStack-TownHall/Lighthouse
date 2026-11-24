@@ -5,4 +5,5 @@ export const createGeneratorController = (service) => ({
   check: async (req, res) => sendSuccess(res, service.check(req.valid.body.config), 'Checked'),
   generate: async (req, res) => sendCreated(res, await service.run(req.valid.body.config, { projectId: req.valid.body.projectId, user: req.user }), 'Generated'),
   list: async (req, res) => { const { items, pagination } = await service.list(req.valid.query); sendPaginated(res, items, pagination); },
+  saveZip: async (req, res) => sendSuccess(res, await service.saveZip(req.valid.params.id, req.body), 'ZIP saved'),
 });

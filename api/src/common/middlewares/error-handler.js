@@ -32,6 +32,9 @@ export function errorHandler(err, req, res, next) {
   if (err?.type === 'entity.parse.failed') {
     return sendError(res, 400, 'Malformed JSON body', 'BAD_REQUEST');
   }
+  if (err?.type === 'entity.too.large') {
+    return sendError(res, 413, 'Request body too large', 'PAYLOAD_TOO_LARGE');
+  }
 
   // eslint-disable-next-line no-console
   console.error(`[${req.requestId}]`, err);

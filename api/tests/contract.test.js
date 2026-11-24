@@ -45,6 +45,7 @@ before(async () => {
   );
   app.get('/api/boom', asyncHandler(async () => { throw new AppError(409, 'Already there', 'SLOT_TAKEN'); }));
   app.get('/api/crash', () => { throw new Error('secret internals'); });
+  app.post('/api/zip-limit', express.raw({ type: 'application/zip', limit: '4b' }), (_req, res) => res.sendStatus(204));
   app.use(notFoundHandler);
   app.use(errorHandler);
   await new Promise((r) => { server = app.listen(0, r); });
@@ -54,6 +55,14 @@ after(() => server.close());
 
 const isEnvelope = (b) =>
   ['success', 'message', 'data', 'meta', 'error', 'requestId'].every((k) => k in b);
+
+test('oversized ZIP body uses the standard 413 error envelope', async () => {
+  const res = await fetch(`${base}/api/zip-limit`, { method: 'POST', headers: { 'content-type': 'application/zip' }, body: Buffer.from('12345') });
+  const body = await res.json();
+  assert.equal(res.status, 413);
+  assert.ok(isEnvelope(body));
+  assert.equal(body.error.code, 'PAYLOAD_TOO_LARGE');
+});
 
 test('success envelope + request id header', async () => {
   const res = await fetch(`${base}/api/health`, { headers: { 'X-Request-Id': 'abc-123' } });

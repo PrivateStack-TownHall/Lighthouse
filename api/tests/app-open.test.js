@@ -40,7 +40,7 @@ test('options list the business categories and the new databases', async () => {
 test('generate without a token; history row has no user', async () => {
   const r = await call('POST', '/generations', { config });
   assert.equal(r.status, 201, JSON.stringify(r.body.error));
-  assert.ok(r.body.data.files.some((f) => f.path === 'PROMPTS/06-feature-template.md'));
+  assert.ok(r.body.data.files.some((f) => f.path === 'PROMPTS/06-implementation.md'));
   for (const path of ['SYSTEM_DESIGN.md', 'DEVELOPMENT_STANDARDS.md']) {
     const file = r.body.data.files.find((f) => f.path === path);
     assert.ok(file.content.includes('Lighthouse 123'));

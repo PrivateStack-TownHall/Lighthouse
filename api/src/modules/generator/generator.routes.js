@@ -1,7 +1,7 @@
-import { Router } from 'express';
+import { Router, raw } from 'express';
 import { validate, asyncHandler } from '../../common/middlewares/validate.js';
 import { authenticate, requireRoles } from '../../common/middlewares/auth.js';
-import { configBodySchema, listGenerationsSchema } from './generator.schema.js';
+import { configBodySchema, generationIdSchema, listGenerationsSchema } from './generator.schema.js';
 import { createGeneratorController } from './generator.controller.js';
 
 const ANY = ['ADMIN', 'STAFF', 'USER'];
@@ -17,5 +17,6 @@ export function createGeneratorRouter({ service, secret, authRequired }) {
   router.post('/compatibility-checks', ...guard(...ANY), validate(configBodySchema), asyncHandler(c.check));
   router.get('/generations', ...guard(...ANY), validate(listGenerationsSchema, 'query'), asyncHandler(c.list));
   router.post('/generations', ...guard(...WRITE), validate(configBodySchema), asyncHandler(c.generate));
+  router.post('/generations/:id/export-zip', ...guard(...WRITE), validate(generationIdSchema, 'params'), raw({ type: 'application/zip', limit: '20mb' }), asyncHandler(c.saveZip));
   return router;
 }

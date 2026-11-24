@@ -7,7 +7,7 @@ const envelope = (data, extra = {}) => ({
   },
 });
 const ok = (description, data = { type: 'object' }, extra) => ({ description, content: { 'application/json': { schema: envelope(data, extra) } } });
-const err = (codes) => Object.fromEntries(codes.map((c) => [c, { description: { 400: 'VALIDATION_ERROR', 401: 'UNAUTHORIZED', 403: 'FORBIDDEN', 404: 'NOT_FOUND', 422: 'UNPROCESSABLE' }[c], content: { 'application/json': { schema: envelope({ nullable: true }) } } }]));
+const err = (codes) => Object.fromEntries(codes.map((c) => [c, { description: { 400: 'VALIDATION_ERROR', 401: 'UNAUTHORIZED', 403: 'FORBIDDEN', 404: 'NOT_FOUND', 413: 'PAYLOAD_TOO_LARGE', 422: 'UNPROCESSABLE' }[c], content: { 'application/json': { schema: envelope({ nullable: true }) } } }]));
 const secured = [{ bearer: [] }];
 const listParams = ['page', 'limit', 'sort', 'q'].map((name) => ({ name, in: 'query', schema: { type: name === 'page' || name === 'limit' ? 'integer' : 'string' } }));
 const idParam = [{ name: 'id', in: 'path', required: true, schema: { type: 'string', format: 'uuid' } }];
@@ -39,11 +39,16 @@ export function buildOpenApi({ name, version }) {
       '/auth/login': { post: { tags: ['Auth'], summary: 'Sign in', requestBody: { required: true, content: { 'application/json': { schema: { type: 'object', required: ['email', 'password'], properties: { email: { type: 'string' }, password: { type: 'string' } } } } } }, responses: { 200: ok('accessToken, refreshToken, expiresIn, user'), ...err([400, 401]) } } },
       '/auth/refresh': { post: { tags: ['Auth'], summary: 'New access token', requestBody: { required: true, content: { 'application/json': { schema: { type: 'object', required: ['refreshToken'], properties: { refreshToken: { type: 'string' } } } } } }, responses: { 200: ok('accessToken, expiresIn'), ...err([400, 401]) } } },
       '/auth/me': { get: { tags: ['Auth'], summary: 'Current user', security: secured, responses: { 200: ok('user', { $ref: '#/components/schemas/User' }), ...err([401]) } } },
-      '/options': { get: { tags: ['Generator'], summary: 'Choices, tools, presets, Fixed Rules and outputs from the Contract Kit library', security: secured, responses: { 200: ok('options'), ...err([401]) } } },
+      '/options': { get: { tags: ['Generator'], summary: 'Choices, tools, presets, Fixed Rules and outputs from the project requirements library', security: secured, responses: { 200: ok('options'), ...err([401]) } } },
       '/compatibility-checks': { post: { tags: ['Generator'], summary: 'Validate a configuration without generating', security: secured, requestBody: configBody, responses: { 200: ok('ok, level, errors, problems, docs, configHash'), ...err([400, 401]) } } },
       '/generations': {
         get: { tags: ['Generator'], summary: 'Generation history', security: secured, parameters: listParams, responses: { 200: ok('generations', { type: 'array', items: { type: 'object' } }, paginated), ...err([400, 401]) } },
         post: { tags: ['Generator'], summary: 'Generate the project package (ADMIN, STAFF)', security: secured, requestBody: configBody, responses: { 201: ok('generation', { $ref: '#/components/schemas/Generation' }), ...err([400, 401, 403, 422]) } },
+      },
+      '/generations/{id}/export-zip': {
+        post: { tags: ['Generator'], summary: 'Save a ZIP after Export ZIP is clicked (ADMIN, STAFF)', security: secured, parameters: idParam,
+          requestBody: { required: true, content: { 'application/zip': { schema: { type: 'string', format: 'binary' } } } },
+          responses: { 200: ok('Saved ZIP filename', { type: 'object', properties: { filename: { type: 'string' } } }), ...err([400, 401, 403, 404, 413]) } },
       },
       '/projects': {
         get: { tags: ['Projects'], summary: 'Saved projects', security: secured, parameters: listParams, responses: { 200: ok('projects', { type: 'array', items: { $ref: '#/components/schemas/Project' } }, paginated), ...err([400, 401]) } },

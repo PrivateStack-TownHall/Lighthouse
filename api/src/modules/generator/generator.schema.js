@@ -7,3 +7,4 @@ export const configBodySchema = z.object({
   projectId: z.uuid().optional(),
 });
 export const listGenerationsSchema = paginationQuerySchema;
+export const generationIdSchema = z.object({ id: z.uuid() });

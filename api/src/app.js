@@ -14,14 +14,14 @@ import { createGeneratorService } from './modules/generator/generator.service.js
 import { createGeneratorRouter } from './modules/generator/generator.routes.js';
 import { buildOpenApi } from './docs/openapi.js';
 
-export const APP = { name: 'Lighthouse – Contract Kit', type: 'CONTRACT_KIT', version: '1.1.1' };
+export const APP = { name: 'Lighthouse', type: 'CONTRACT_KIT', version: '1.1.1' };
 
 /** Order matters: requestId first, errorHandler last (express/src/app.example.js). */
-export async function createApp({ env, store, kitRoot, authRequired = false }) {
+export async function createApp({ env, store, kitRoot, exportDir, authRequired = false }) {
   const secret = env.JWT_SECRET;
   const auth = createAuthService({ store, secret });
   const projects = createProjectsService({ store });
-  const generator = await createGeneratorService({ store, kitRoot });
+  const generator = await createGeneratorService({ store, kitRoot, exportDir });
 
   const app = express();
   app.disable('x-powered-by');

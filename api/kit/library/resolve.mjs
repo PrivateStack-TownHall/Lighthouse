@@ -19,12 +19,12 @@ export function loadDocs() {
       const p = join(dir, f);
       if (statSync(p).isDirectory()) walk(p);
       else if (f.endsWith('.md') && !f.startsWith('_') && f !== 'README.md') {
-        const text = readFileSync(p, 'utf8');
-        const m = text.match(/^---\n([\s\S]*?)\n---/);
+        const text = readFileSync(p, 'utf8').replace(/\r\n/g, '\n');
+        const m = text.match(/^---\r?\n([\s\S]*?)\r?\n---/);
         if (!m) continue;
-        const fm = Object.fromEntries(m[1].split('\n').filter((l) => /^[a-z_]+:/.test(l)).map((l) => [l.split(':')[0], l.slice(l.indexOf(':') + 1).trim()]));
+        const fm = Object.fromEntries(m[1].split(/\r?\n/).filter((l) => /^[a-z_]+:/.test(l)).map((l) => [l.split(':')[0], l.slice(l.indexOf(':') + 1).trim()]));
         const marks = (text.match(/\[\?\]/g) ?? []).length;
-        docs[fm.id] = { ...fm, path: relative(root, p), unverifiedMarks: marks };
+        docs[fm.id] = { ...fm, path: relative(root, p).split('\\').join('/'), unverifiedMarks: marks };
       }
     }
   })(root);

@@ -1,0 +1,117 @@
+{
+  "generator": "lighthouse-contract-kit@1.3.0",
+  "generatedOn": "2026-11-23",
+  "configHash": "86539ede",
+  "compatibility": "warn",
+  "problems": [
+    {
+      "level": "warn",
+      "message": "The kit front end files are .ts/.tsx. Convert them or choose TypeScript."
+    },
+    {
+      "level": "warn",
+      "message": "The stack differs from preset \"Express + Sequelize + React (Vite)\". Set `preset` to \"custom\" or restore the preset stack."
+    }
+  ],
+  "docs": [
+    {
+      "id": "core-rules",
+      "path": "core/core-rules.md",
+      "status": "verified",
+      "unverifiedMarks": 0
+    },
+    {
+      "id": "javascript",
+      "path": "languages/javascript.md",
+      "status": "partial",
+      "unverifiedMarks": 1
+    },
+    {
+      "id": "react-vite",
+      "path": "frontend/react-vite.md",
+      "status": "partial",
+      "unverifiedMarks": 1
+    },
+    {
+      "id": "tailwindcss",
+      "path": "css/tailwindcss.md",
+      "status": "partial",
+      "unverifiedMarks": 2
+    },
+    {
+      "id": "express",
+      "path": "backend/express.md",
+      "status": "partial",
+      "unverifiedMarks": 1
+    },
+    {
+      "id": "sequelize",
+      "path": "orm/sequelize.md",
+      "status": "partial",
+      "unverifiedMarks": 2
+    },
+    {
+      "id": "postgresql",
+      "path": "database/postgresql.md",
+      "status": "draft",
+      "unverifiedMarks": 2
+    },
+    {
+      "id": "zod",
+      "path": "integrations/zod.md",
+      "status": "verified",
+      "unverifiedMarks": 0
+    },
+    {
+      "id": "eslint",
+      "path": "tooling/eslint.md",
+      "status": "partial",
+      "unverifiedMarks": 1
+    },
+    {
+      "id": "bcryptjs",
+      "path": "integrations/bcryptjs.md",
+      "status": "partial",
+      "unverifiedMarks": 1
+    },
+    {
+      "id": "jsonwebtoken",
+      "path": "integrations/jsonwebtoken.md",
+      "status": "partial",
+      "unverifiedMarks": 1
+    },
+    {
+      "id": "axios",
+      "path": "integrations/axios.md",
+      "status": "partial",
+      "unverifiedMarks": 1
+    },
+    {
+      "id": "tanstack-query",
+      "path": "integrations/tanstack-query.md",
+      "status": "draft",
+      "unverifiedMarks": 1
+    },
+    {
+      "id": "express-sequelize-postgresql",
+      "path": "combos/express-sequelize-postgresql.md",
+      "status": "partial",
+      "unverifiedMarks": 4
+    }
+  ],
+  "files": [
+    "ARCHITECTURE.md",
+    "DEVELOPMENT_STANDARDS.md",
+    "MASTER_PROMPT.md",
+    "PROJECT_CONTRACT.md",
+    "PROMPTS/00-INDEX.md",
+    "PROMPTS/01-scaffold.md",
+    "PROMPTS/02-api-foundation.md",
+    "PROMPTS/03-database.md",
+    "PROMPTS/04-auth.md",
+    "PROMPTS/05-ui-foundation.md",
+    "PROMPTS/06-feature-template.md",
+    "PROMPTS/07-release-v1.md",
+    "SYSTEM_DESIGN.md"
+  ]
+}

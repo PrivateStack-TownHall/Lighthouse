@@ -32,7 +32,7 @@ const coreTools = (c, compat) => compat.alwaysInclude.filter((id) => id !== 'cor
 
 // ---------------------------------------------------------------- small pure helpers
 export function parseFrontMatter(text) {
-  const m = text.match(/^---\n([\s\S]*?)\n---/);
+  const m = text.match(/^---\r?\n([\s\S]*?)\r?\n---/);
   if (!m) return null;
   const out = {}; let parent = null;
   const val = (raw) => {
@@ -42,7 +42,7 @@ export function parseFrontMatter(text) {
     if (v.startsWith('[')) return v.slice(1, -1).split(',').map((s) => s.trim().replace(/^"|"$/g, '')).filter(Boolean);
     return v;
   };
-  for (const line of m[1].split('\n')) {
+  for (const line of m[1].split(/\r?\n/)) {
     const top = line.match(/^([a-z_]+):\s*(.*)$/);
     const sub = line.match(/^\s+([a-z_]+):\s*(.*)$/);
     if (top) { const v = val(top[2]); if (v === '') { out[top[1]] = {}; parent = top[1]; } else { out[top[1]] = v; parent = null; } }
@@ -53,7 +53,7 @@ export function parseFrontMatter(text) {
 
 /** Body of `## <n>. ...` (or `## <title>`) up to the next `## `, trimmed. */
 export function section(text, key) {
-  const lines = text.split('\n'); const out = []; let on = false; let fence = false;
+  const lines = text.split(/\r?\n/); const out = []; let on = false; let fence = false;
   const isHead = (l) => typeof key === 'number' ? l.startsWith(`## ${key}.`) : l.trim() === `## ${key}`;
   for (const l of lines) {
     if (l.startsWith('```')) fence = !fence;
@@ -63,7 +63,7 @@ export function section(text, key) {
   return out.join('\n').trim();
 }
 
-const tableRows = (md) => md.split('\n').filter((l) => /^\|/.test(l) && !/^\|\s*-/.test(l)).slice(1)
+const tableRows = (md) => md.split(/\r?\n/).filter((l) => /^\|/.test(l) && !/^\|\s*-/.test(l)).slice(1)
   .map((l) => l.split('|').slice(1, -1).map((c) => c.trim()));
 
 export function fnv1a(str) {
@@ -90,7 +90,7 @@ const numbered = (items) => items.map((i, n) => `${n + 1}. ${i}`).join('\n');
 const checks = (items) => items.map((i) => `- [ ] ${i}`).join('\n');
 const snake = (s) => s.replace(/-/g, '_');
 const lead = (label, text) => (text.startsWith('```') ? `${label}:\n${text}` : `${label}: ${text}`);
-const unquote = (s) => s.split('\n').map((l) => l.replace(/^>\s?/, '')).join('\n').trim();
+const unquote = (s) => s.split(/\r?\n/).map((l) => l.replace(/^>\s?/, '')).join('\n').trim();
 
 // ---------------------------------------------------------------- config validation
 export function validateConfig(c, lib) {
@@ -474,7 +474,7 @@ const uiVar = (s) => (s.frontend === 'nextjs' ? '`NEXT_PUBLIC_API_URL` in `.env.
 
 // ---------------------------------------------------------------- trees from docs/ARCHITECTURE.md
 const branchCol = (l) => { const i = l.search(/[├└]─/); return i; };
-const codeBlock = (text) => { const m = text.match(/```[a-z]*\n([\s\S]*?)\n```/); return m ? m[1] : ''; };
+const codeBlock = (text) => { const m = text.match(/```[a-z]*\r?\n([\s\S]*?)\r?\n```/); return m ? m[1] : ''; };
 
 /** Remove a tree line (and its children), keeping the connectors right. */
 function removeLine(lines, idx) {
@@ -811,7 +811,7 @@ export async function loadLibrary(kitRoot) {
       const p = join(dir, f);
       if (statSync(p).isDirectory()) { if (f !== 'outputs' && f !== 'examples' && f !== 'tests') walk(p); continue; }
       if (!f.endsWith('.md') || f.startsWith('_') || f === 'README.md') continue;
-      const text = readFileSync(p, 'utf8'); const fm = parseFrontMatter(text);
+      const text = readFileSync(p, 'utf8').replace(/\r\n/g, '\n'); const fm = parseFrontMatter(text);
       if (!fm) continue;
       const unverified = [];
       const ver = fm.category === 'combo' ? section(text, 'Open points (verify on the first app)') : section(text, 12);
@@ -821,12 +821,12 @@ export async function loadLibrary(kitRoot) {
   })(libRoot);
   const core = docs['core-rules'].text;
   const fixedRules = tableRows(core.slice(core.indexOf('| ID |'))).map(([id, rule]) => ({ id, rule }));
-  const read = (...p) => readFileSync(join(kitRoot, ...p), 'utf8');
+  const read = (...p) => readFileSync(join(kitRoot, ...p), 'utf8').replace(/\r\n/g, '\n');
   const presets = {};
   for (const f of readdirSync(join(libRoot, 'presets'))) if (f.endsWith('.json')) { const x = JSON.parse(readFileSync(join(libRoot, 'presets', f), 'utf8')); presets[x.id] = x; }
   const tdir = join(libRoot, 'outputs', 'templates');
   const templates = {};
-  (function walk(dir) { for (const f of readdirSync(dir)) { const p = join(dir, f); if (statSync(p).isDirectory()) walk(p); else templates[relative(tdir, p).split('\\').join('/')] = readFileSync(p, 'utf8'); } })(tdir);
+  (function walk(dir) { for (const f of readdirSync(dir)) { const p = join(dir, f); if (statSync(p).isDirectory()) walk(p); else templates[relative(tdir, p).split('\\').join('/')] = readFileSync(p, 'utf8').replace(/\r\n/g, '\n'); } })(tdir);
   return {
     compat: JSON.parse(read('library', 'compatibility.json')), ruleHints: JSON.parse(read('library', 'core', 'rule-hints.json')),
     docs, fixedRules, templates, presets,

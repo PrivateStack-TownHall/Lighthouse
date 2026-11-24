@@ -103,7 +103,8 @@ test('System Design and Development Standards generate independently for web and
       const request = { ...selected, outputs: [output] };
       const result = generate(request, lib);
       assert.equal(result.ok, true, JSON.stringify(result.errors));
-      assert.deepEqual(Object.keys(result.files).sort(), [output, 'lighthouse.config.json', 'lighthouse.manifest.json'].sort());
+      assert.deepEqual(Object.keys(result.files).filter((path) => !path.startsWith('docs/')).sort(), [output, 'lighthouse.config.json', 'lighthouse.manifest.json'].sort());
+      assert.ok(result.files['docs/DEFINITION_OF_DONE.md']);
       const content = result.files[output];
       assert.ok(content.includes(selected.project.name));
       assert.doesNotMatch(content, /\{\{[a-zA-Z0-9_.]+\}\}/);
@@ -121,4 +122,59 @@ test('System Design and Development Standards generate independently for web and
       assert.deepEqual(generate(request, lib).files, result.files);
     }
   }
+});
+
+test('standalone packages include their specifications across supported project modes', () => {
+  const requests = [
+    { ...config, project: { ...config.project, features: undefined } },
+    { ...config, stack: { ...config.stack, language: 'typescript', backend: 'nestjs', orm: 'prisma', frontend: 'nextjs' } },
+    { ...config, project: { ...config.project, type: 'api', category: 2, features: [] }, stack: { ...config.stack, frontend: null, css: null, tools: [] } },
+    { ...config, project: { ...config.project, type: 'frontend', category: undefined, nn: undefined, features: [] }, stack: { ...config.stack, backend: null, orm: null, database: null } },
+    { ...config, stack: { ...config.stack, database: 'mysql', css: 'bootstrap' } },
+    { ...config, stack: { ...config.stack, database: 'mongodb', orm: 'mongoose' } },
+  ];
+  for (const request of requests) {
+    const result = generate({ ...request, outputs: OUTPUTS }, lib);
+    assert.equal(result.ok, true, JSON.stringify(result.errors));
+    for (const path of ['docs/PROJECT_CONTRACT.md', 'docs/ARCHITECTURE.md', 'docs/STACK.md', 'docs/DEFINITION_OF_DONE.md', 'docs/PORTS.md']) assert.ok(result.files[path], path);
+    for (const [path, content] of Object.entries(result.files)) {
+      assert.doesNotMatch(content, /contract[- ]kit|\bthe kit\b|\bv1(?:\.\d+)?\b|3[-–]7|must-have features|release-v1|feature-template/i, path);
+      if (path.endsWith('.md')) for (const match of content.matchAll(/`(docs\/[A-Z_]+\.md)`/g)) assert.ok(result.files[match[1]], `${path} requires ${match[1]}`);
+    }
+    const dod = result.files['docs/DEFINITION_OF_DONE.md'];
+    assert.ok(dod.includes(request.project.description));
+    assert.match(dod, /feature list is optional/i);
+    assert.match(dod, /Verification record/);
+    assert.doesNotMatch(dod, /\[x\]/i);
+    if (request.project.type === 'frontend') assert.doesNotMatch(dod, /Database setup|Authentication and role restrictions/);
+    if (request.project.type === 'api') assert.doesNotMatch(dod, /Keyboard access|loading, empty/);
+    assert.deepEqual(generate({ ...request, outputs: OUTPUTS }, lib).files, result.files);
+    const manifest = JSON.parse(result.files['lighthouse.manifest.json']);
+    assert.ok(manifest.files.includes('docs/DEFINITION_OF_DONE.md'));
+  }
+});
+
+test('feature lists are optional and do not impose a count or generic resource', () => {
+  for (const features of [undefined, [], config.project.features.slice(0, 1), Array.from({ length: 8 }, (_, i) => ({ name: `Item ${i}`, resource: `items-${i}`, description: `Requested outcome ${i}` }))]) {
+    const result = generate({ ...config, project: { ...config.project, features }, outputs: OUTPUTS }, lib);
+    assert.equal(result.ok, true, JSON.stringify(result.errors));
+    if (!features?.length) {
+      assert.ok(result.files['PROMPTS/06-implementation.md']);
+      assert.doesNotMatch(result.files['PROJECT_CONTRACT.md'], /\/api\/<resource>/);
+    }
+  }
+  const malformed = generate({ ...config, project: { ...config.project, features: [{ name: 'Incomplete' }] } }, lib);
+  assert.equal(malformed.ok, false);
+  assert.ok(malformed.errors.some((message) => message.includes('needs a name and a description')));
+});
+
+test('prompt-only exports carry their own references and revised FR-021', () => {
+  const result = generate({ ...config, project: { ...config.project, features: [] }, outputs: ['PROMPTS/'] }, lib);
+  assert.equal(result.ok, true);
+  assert.equal(result.files['PROJECT_CONTRACT.md'], undefined);
+  assert.ok(result.files['docs/PROJECT_CONTRACT.md']);
+  assert.match(result.files['PROMPTS/02-api-foundation.md'], /Create `api\/src\/common\//);
+  assert.match(result.files['PROMPTS/05-ui-foundation.md'], /Implement `ui\/src\/lib\/api-client/);
+  assert.match(result.files['docs/PROJECT_CONTRACT.md'], /FR-021.*acceptance criteria.*feature lists are optional/);
+  assert.ok(result.files['PROMPTS/07-verification.md']);
 });

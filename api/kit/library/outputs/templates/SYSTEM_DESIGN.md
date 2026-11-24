@@ -12,7 +12,7 @@
 {{design.entities}}
 ```
 
-The users entity follows the kit auth contract. Feature entities contain only the shared identity and timestamp fields. Business fields and relationships must be defined from the feature requirements before writing migrations; no foreign keys or relationships are assumed here. For document databases, these are conceptual entities rather than SQL tables.
+The users entity follows the documented authentication contract. Optional feature entities contain only shared identity and timestamp fields. Define business fields and relationships from the agreed requirements before writing migrations; no foreign keys or relationships are assumed here. For document databases, these are conceptual entities rather than SQL tables.
 
 {{design.data}}
 

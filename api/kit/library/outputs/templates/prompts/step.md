@@ -2,7 +2,7 @@
 
 # Step {{step.number}}: {{step.title}}
 
-> Use together with `MASTER_PROMPT.md`. {{step.previous}}
+> Use the bundled project specifications in `docs/`. {{step.previous}}
 
 ## Goal
 {{step.goal}}

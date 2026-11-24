@@ -2,7 +2,7 @@
 
 # Project Contract: {{project.name}}
 
-The agreement for building {{project.name}}. Sections 3-6 are the shared standard of every A1/A2/A3 app (from `contract-kit/docs/CONVENTIONS.md`): they read the same whatever the stack. Section 7 says where each part lives in **this** stack.
+The agreement for building {{project.name}}. The bundled specifications define the response contract, implementation responsibilities and verification criteria for the selected stack.
 
 ## 1. Project information
 {{project.info}}
@@ -14,11 +14,11 @@ The agreement for building {{project.name}}. Sections 3-6 are the shared standar
 
 {{compatibility}}
 
-## 3. Scope of v1
-### Must-have features
+## 3. Project scope
+### Requested outcomes
 {{project.features}}
 
-### Not in v1 (parking lot)
+### Outside the agreed scope
 {{project.parkingLot}}
 
 ## 4. API contract
@@ -56,7 +56,7 @@ Base URL: `{{api.baseUrl}}` · Swagger UI: `{{api.baseUrl}}/docs` · no version 
 ## 7. Where the contract lives in this stack
 {{impl.table}}
 
-## 8. Definition of Done (v1)
+## 8. Definition of Done
 {{dod}}
 
 ## 9. Unverified

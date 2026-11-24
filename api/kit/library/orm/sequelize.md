@@ -41,10 +41,10 @@ The command comes from the product spec and general experience; the fetched docs
 - MongoDB: not supported by Sequelize (SQL dialects only); choose Mongoose [V]
 
 ## 6. Folder structure
-`src/database/{models,migrations,seeders}` (`docs/ARCHITECTURE.md` section 2). This needs a `.sequelizerc` that points the CLI at those paths.
+`src/database/{models,migrations,seeders}` (`docs/ARCHITECTURE.md`). This needs a `.sequelizerc` that points the CLI at those paths.
 
 ## 7. package.json scripts
-`templates/package-scripts.backend-express-sequelize.json`: `db:create`, `db:migrate`, `db:seed`, `db:reset`, `db:setup` (all via `sequelize-cli`).
+Configure scripts in the backend package: `db:create`, `db:migrate`, `db:seed`, `db:reset`, `db:setup` (all via `sequelize-cli`).
 
 ## 8. Config files
 `.sequelizerc` (JSON or a Node script that exports an object; the CLI loads it automatically) [V]. The CLI looks for `config/config.js` or `config/config.json` unless `--config` is given [V]. A connection string can come from `--url` or from `use_env_variable` [V]. Migrations are tracked in the `SequelizeMeta` table by default (`migrationStorage`); seeds are not tracked (`seederStorage: none`) [V].

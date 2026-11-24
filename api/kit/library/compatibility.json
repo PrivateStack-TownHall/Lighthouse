@@ -1,10 +1,10 @@
 {
   "generatedOn": "2026-11-23",
   "levels": {
-    "supported": "The Contract Kit has code or templates for this combination.",
-    "allowed": "No kit code. Docs exist for each member; write the glue and mark it unverified.",
+    "supported": "Integration guidance is available for this combination; verify the implementation in the project.",
+    "allowed": "Individual technology guidance is available; verify their integration in the project.",
     "warn": "Works in principle but needs a conversion or has an open point.",
-    "unsupported": "The kit cannot produce this. Ask the user to change the choice."
+    "unsupported": "This combination is not supported by the documented requirements. Choose a supported combination."
   },
   "choices": {
     "language": [
@@ -64,7 +64,7 @@
         "language": "javascript"
       },
       "level": "unsupported",
-      "message": "The kit has no JavaScript NestJS code. Choose TypeScript."
+      "message": "The documented NestJS setup requires TypeScript. Choose TypeScript."
     },
     {
       "when": {
@@ -72,7 +72,7 @@
         "orm": "sequelize"
       },
       "level": "allowed",
-      "message": "No kit template for NestJS + Sequelize (it needs a Nest-specific Sequelize package: not verified)."
+      "message": "NestJS + Sequelize requires framework integration that has not been verified in this library."
     },
     {
       "when": {
@@ -80,7 +80,7 @@
         "orm": "prisma"
       },
       "level": "allowed",
-      "message": "No kit template for Express + Prisma. The observability router only needs a checkDatabase function."
+      "message": "Express + Prisma integration is not verified. Implement the database probe with the selected client."
     },
     {
       "when": {
@@ -89,38 +89,6 @@
       },
       "level": "warn",
       "message": "The Prisma 7 quickstart is TypeScript and ESM; JavaScript use was not verified."
-    },
-    {
-      "when": {
-        "orm": "sequelize",
-        "language": "typescript"
-      },
-      "level": "allowed",
-      "message": "The kit's Express code is JavaScript; the Sequelize templates are JavaScript too."
-    },
-    {
-      "when": {
-        "backend": "express",
-        "language": "typescript"
-      },
-      "level": "allowed",
-      "message": "The kit's Express code is JavaScript (ESM). Convert the files to .ts."
-    },
-    {
-      "when": {
-        "frontend": "react-vite",
-        "language": "javascript"
-      },
-      "level": "warn",
-      "message": "The kit front end files are .ts/.tsx. Convert them or choose TypeScript."
-    },
-    {
-      "when": {
-        "frontend": "nextjs",
-        "language": "javascript"
-      },
-      "level": "warn",
-      "message": "The kit front end files are .ts/.tsx. Convert them or choose TypeScript."
     },
     {
       "when": {
@@ -167,14 +135,14 @@
         "database": "mysql"
       },
       "level": "allowed",
-      "message": "No kit template for MySQL: the compose file, db:create and the env example are PostgreSQL. Adapt them."
+      "message": "Verify compose configuration, setup commands and environment values specifically for MySQL."
     },
     {
       "when": {
         "database": "mongodb"
       },
       "level": "warn",
-      "message": "No kit template for MongoDB and no migration CLI in the library: the compose file and db:* scripts need changes, and UUID ids replace ObjectIds (FR-009)."
+      "message": "MongoDB needs database-specific setup and schema-change procedures; use UUID identities under FR-009."
     },
     {
       "when": {
@@ -182,14 +150,14 @@
         "orm": "mongoose"
       },
       "level": "allowed",
-      "message": "No kit template for NestJS + Mongoose (a Nest-specific package exists: not verified)."
+      "message": "NestJS + Mongoose framework integration has not been verified in this library."
     },
     {
       "when": {
         "css": "bootstrap"
       },
       "level": "warn",
-      "message": "The kit design tokens (tokens.css) are a Tailwind v4 @theme file: map the same semantic tokens to Bootstrap variables yourself."
+      "message": "Implement the semantic design tokens as Bootstrap Sass or CSS variables; do not use Tailwind @theme directives."
     },
     {
       "when": {

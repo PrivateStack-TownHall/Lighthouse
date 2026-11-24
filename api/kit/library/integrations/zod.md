@@ -48,7 +48,7 @@ None.
 - MUST NOT duplicate a schema as a class and as Zod.
 
 ## 10. Known pitfalls
-- Swagger request bodies are not generated from Zod in v1 (parked: `nestjs-zod`).
+- Document Swagger request bodies explicitly unless a verified schema integration is configured.
 
 ## 11. Prompt fragment
 > Validate with Zod everywhere: env at boot, request bodies, queries and params. Infer types from schemas. Failures become 400 VALIDATION_ERROR with `details[].path` and `message`.

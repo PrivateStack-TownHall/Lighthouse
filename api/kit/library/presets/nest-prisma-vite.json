@@ -1,6 +1,6 @@
 {
   "id": "nest-prisma-vite",
   "name": "NestJS + Prisma + React (Vite)",
-  "description": "TypeScript end to end. The kit has code for every layer (combo nestjs-prisma-postgresql).",
+  "description": "TypeScript with NestJS, Prisma, PostgreSQL and React + Vite; integration guidance is included.",
   "stack": { "language": "typescript", "frontend": "react-vite", "css": "tailwindcss", "backend": "nestjs", "orm": "prisma", "database": "postgresql", "tools": ["axios", "tanstack-query"] }
 }

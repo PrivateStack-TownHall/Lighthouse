@@ -6,7 +6,7 @@ status: partial
 verified_on: 2026-11-23
 versions:
   npm_latest: "7.0.2"
-  recommended: "7.x (the kit also passes on 6.0.3)"
+  recommended: "7.x"
   kit_tested: "6.0.3 and 7.0.2, strict"
 node: ">=16.20.0"
 requires: []
@@ -34,13 +34,13 @@ Choose for NestJS, Next.js, Vite React and any API with several contributors. Do
 `npm i -D typescript @types/node`
 
 ## 6. Folder structure
-Add `src/types/` for shared types and `helpers/index.ts`. Test files sit next to the code (`docs/ARCHITECTURE.md` section 5).
+Add `src/types/` for shared types and `helpers/index.ts`. Test files sit next to the code (`docs/ARCHITECTURE.md`).
 
 ## 7. package.json scripts
 `typecheck` = `tsc --noEmit` (`tsc -b` for the Vite project references). In `nest-prisma` it is `prisma generate && tsc --noEmit`.
 
 ## 8. Config files
-`tsconfig.json`. NestJS needs `experimentalDecorators` and `emitDecoratorMetadata`. `strict` is a repo choice: the kit is verified under strict, and repo conventions are not standardized.
+`tsconfig.json`. NestJS needs `experimentalDecorators` and `emitDecoratorMetadata`. Choose and document compiler strictness, and typecheck the actual project.
 
 ## 9. Rules (MUST / MUST NOT)
 - MUST run `typecheck` before merging.
@@ -50,7 +50,7 @@ Add `src/types/` for shared types and `helpers/index.ts`. Test files sit next to
 
 ## 10. Known pitfalls
 - Under TypeScript 6, a `tsconfig` used by ts-node needed `ignoreDeprecations: "6.0"` and `rootDir` [T].
-- TypeScript 7.0.2 is a new major line: the kit typechecks, but your own plugins and tools (ts-node, jest transforms) were not tried against it [?].
+- TypeScript 7.0.2 is a new major line: the reference checks passed, but your project plugins and tools (ts-node, jest transforms) were not tried against it [?].
 
 ## 11. Prompt fragment
 > Use TypeScript. Put shared types in `src/types/`. Infer types from Zod schemas. Run `npm run typecheck` before finishing. In NestJS DTOs always write `@ApiProperty({ type })` with an explicit `type`.

@@ -42,10 +42,10 @@ See Scaffold. A driver adapter is required: the client is constructed with it.
 - MySQL: `@prisma/adapter-mariadb` (MySQL and MariaDB) [V]
 
 ## 6. Folder structure
-`docs/ARCHITECTURE.md` section 1: `prisma/schema.prisma`, `prisma/migrations/`, `src/prisma/prisma.service.ts`.
+`docs/ARCHITECTURE.md`: `prisma/schema.prisma`, `prisma/migrations/`, `src/prisma/prisma.service.ts`.
 
 ## 7. package.json scripts
-`templates/package-scripts.backend-nest-prisma.json`. Verified commands: `prisma migrate dev --name <n>`, `prisma generate`, `prisma studio` [V]. **The template has not been checked against Prisma 7**: it calls `prisma generate` in `dev` / `build` / `typecheck` / `test` / `postinstall` and runs the seed with `ts-node` from `prisma/seed.ts`. How v7 configures the seed was not on the fetched page [?].
+Configure backend scripts using the CLI commands for the pinned major. Recorded commands: `prisma migrate dev --name <n>`, `prisma generate`, `prisma studio` [V]. Verify when `prisma generate` is needed for the project lifecycle and configure the seed entry point using the installed major documentation [?].
 
 ## 8. Config files
 Generator: `provider = "prisma-client"`, `output = "../generated/prisma"` (ESM-first) [V]. `DATABASE_URL` in `.env`, read by the config file via `dotenv/config` [V].
@@ -79,7 +79,7 @@ Generator: `provider = "prisma-client"`, `output = "../generated/prisma"` (ESM-f
 | No MongoDB in Prisma 7 | [V] | prisma.io v7 MongoDB page |
 | MySQL with only `DATABASE_URL` | [?] | quickstart uses separate variables |
 | Seed configuration in v7 | [?] | not on the fetched page |
-| Kit template scripts against Prisma 7 | [?] | not run |
+| Project lifecycle scripts against Prisma 7 | [?] | not run |
 | Prisma 8 scaffold | [V] | prisma.io docs page (RC) |
 
 ## 13. Sources

@@ -46,7 +46,7 @@ import { defineConfig } from "vite"
 import tailwindcss from "@tailwindcss/vite"
 export default defineConfig({ plugins: [tailwindcss()] })
 ```
-CSS entry: `@import "tailwindcss";` (the kit `tokens.css` already starts with it).
+CSS entry: `@import "tailwindcss";` (add it to the project stylesheet).
 - Next.js: the setup differs; use the Next.js framework guide [?].
 
 ## 9. Rules (MUST / MUST NOT)
@@ -56,7 +56,7 @@ CSS entry: `@import "tailwindcss";` (the kit `tokens.css` already starts with it
 
 ## 10. Known pitfalls
 - `@theme` variable names create utilities (e.g. `--color-brand-600` -> `bg-brand-600`); renaming a token renames the utility [?].
-- The kit tokens were checked for contrast, not rendered.
+- Verify token contrast and actual browser rendering in the project.
 
 ## 11. Prompt fragment
 > Use Tailwind CSS v4 with `@tailwindcss/vite`. All colors come from the tokens in `src/styles/tokens.css`; never write raw hex in components.

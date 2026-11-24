@@ -54,7 +54,7 @@ Cost factor in env, not in code.
 | Claim | Mark | Evidence |
 |---|---|---|
 | Version | [V] | `npm view` 2026-11-23 |
-| Usage in the kit | [?] | none |
+| Reference implementation usage | [?] | none |
 
 ## 13. Sources
 - `npm view bcryptjs`

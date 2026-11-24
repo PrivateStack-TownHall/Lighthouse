@@ -33,10 +33,10 @@ No scaffold. `npm init -y`, then set `"type": "module"`.
 Nothing to install.
 
 ## 6. Folder structure
-No `types/` folder. `helpers/index.js` exists from the first commit in the API and in the front end (`docs/ARCHITECTURE.md` section 7).
+No `types/` folder. `helpers/index.js` exists from the first commit in the API and in the front end (`docs/ARCHITECTURE.md`).
 
 ## 7. package.json scripts
-`typecheck` has no compiler in plain JS. `templates/package-scripts.backend-express-sequelize.json` points it at `scripts/check-source.js` (a syntax check). Write that file in the app; the kit does not ship it.
+For plain JavaScript, implement `scripts/check-source.js` to run `node --check` on backend source files and wire `typecheck` to it. For browser JSX, use the scaffold build and an appropriate JSX-aware check. Do not use an empty success script.
 
 ## 8. Config files
 `package.json` with `"type": "module"`. Imports in the API need the `.js` extension (`import x from "./x.js"`).
@@ -49,7 +49,7 @@ No `types/` folder. `helpers/index.js` exists from the first commit in the API a
 - MUST NOT create a `types/` folder.
 
 ## 10. Known pitfalls
-- `sequelize-cli` loads migrations with `require`. In an ESM project they normally have to be `.cjs` files [?]. See `combos/express-sequelize-postgresql.md`.
+- `sequelize-cli` loads migrations with `require`. In an ESM project they normally have to be `.cjs` files [?]. See the relevant integration guidance in `docs/STACK.md`.
 - `__dirname` does not exist in ESM; use `import.meta.url`.
 
 ## 11. Prompt fragment

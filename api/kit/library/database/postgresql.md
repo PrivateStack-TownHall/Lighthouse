@@ -28,16 +28,16 @@ Default for every A1, A2 and A3 app.
 | URL form | `postgresql://user:password@host:port/db` | [V] Prisma v7 quickstart |
 
 ## 4. Scaffold (official CLI first)
-Docker image through `templates/docker-compose.template.yml` (`--profile db`).
+Create a `db` service in `docker-compose.yml` with a pinned PostgreSQL image, a persistent volume, environment-supplied credentials and a `pg_isready` healthcheck. Map the assigned host port to 5432 for local development only.
 
 ## 5. Install
 `pg` driver for Sequelize and for the Prisma adapter.
 
 ## 6. Folder structure
-No application folders. Database name `app_db` in the template.
+No application folders. Set the database name explicitly in the environment.
 
 ## 7. package.json scripts
-`db:create`, `db:migrate`, `db:seed`, `db:reset`, `db:setup` come from the ORM template.
+`db:create`, `db:migrate`, `db:seed`, `db:reset`, `db:setup` must invoke real commands for the selected ORM.
 
 ## 8. Config files
 `DATABASE_URL=postgresql://postgres:postgres@localhost:2CNN/app_db`. Compose healthcheck uses `pg_isready`.

@@ -53,7 +53,7 @@ No scripts.
 - MUST NOT mix Bootstrap with Tailwind CSS in one app.
 
 ## 10. Known pitfalls
-- The kit `tokens.css` is a Tailwind v4 `@theme` file: with Bootstrap it is a reference for the values, not a file to import as is.
+- Define semantic tokens as CSS variables or Sass variables for Bootstrap; do not use Tailwind `@theme` directives.
 - Sass prints deprecation warnings for Bootstrap 5.3; the guide shows how to silence them, they do not stop the build [V].
 
 ## 11. Prompt fragment
@@ -65,7 +65,7 @@ No scripts.
 | Install, Sass import, JS import, deprecation note | [V] | getbootstrap.com/docs/5.3/getting-started/vite |
 | Versions | [V] | `npm view` 2026-11-23 |
 | Next.js setup | [?] | not fetched |
-| Token mapping works with the kit components | [?] | not tried |
+| Token mapping works with the project components | [?] | not tried |
 
 ## 13. Sources
 - https://getbootstrap.com/docs/5.3/getting-started/vite/

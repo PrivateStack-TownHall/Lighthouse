@@ -54,7 +54,7 @@ One `QueryClient` in the providers file.
 | Claim | Mark | Evidence |
 |---|---|---|
 | Version | [V] | `npm view` 2026-11-23 |
-| Use in the kit | [?] | only referenced in ARCHITECTURE.md |
+| Project rendering coverage | [?] | only referenced in ARCHITECTURE.md |
 
 ## 13. Sources
 - `npm view @tanstack/react-query`

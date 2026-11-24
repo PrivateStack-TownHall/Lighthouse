@@ -15,7 +15,7 @@ conflicts_with: []
 # NestJS
 
 ## 1. What it is, in one line
-Structured TypeScript framework with modules, DI, guards and Swagger. Folder layout: `docs/ARCHITECTURE.md` section 1.
+Structured TypeScript framework with modules, DI, guards and Swagger. Folder layout: `docs/ARCHITECTURE.md`.
 
 ## 2. Choose it when / do not choose it when
 Choose for larger APIs, shared databases, role-based access, many modules. Choose Express for small APIs.
@@ -35,19 +35,19 @@ nest new <name>
 # non-interactive, into the current folder:
 npx @nestjs/cli new . --skip-git --package-manager npm
 ```
-Option `--type esm|cjs`: ESM uses Vitest, CommonJS uses Jest [V]. The kit templates assume Jest, so use `--type cjs` unless you decide otherwise (a proposal, not verified on a real scaffold).
+Option `--type esm|cjs`: ESM uses Vitest, CommonJS uses Jest [V]. Choose the module format and test runner together (a proposal, not verified on a real scaffold).
 
 ## 5. Install
-`npm i @nestjs/swagger zod`. ORM: see `prisma.md`.
+`npm i @nestjs/swagger zod`. ORM: follow the selected ORM section in `docs/STACK.md`.
 
 ## 6. Folder structure
-`docs/ARCHITECTURE.md` section 1: `src/common/*`, `src/observability/`, `src/modules/<feature>/`, `test/`.
+`docs/ARCHITECTURE.md`: `src/common/*`, `src/observability/`, `src/modules/<feature>/`, `test/`.
 
 ## 7. package.json scripts
-`templates/package-scripts.backend-nest-prisma.json`. The scaffold ships `start`, `start:dev`, `lint` (oxlint) and `format` (Prettier) [V]; the kit replaces `lint` with ESLint (decided) and adds `dev`.
+The scaffold ships `start`, `start:dev`, `lint` (oxlint) and `format` (Prettier) [V]; configure `lint` with ESLint and add a `dev` alias to the scaffold watch command; preserve working build/start/test commands.
 
 ## 8. Config files
-`.env` validated at boot by `common/config/env.ts` (Zod). `main.example.ts` shows the bootstrap order.
+`.env` validated at boot by `common/config/env.ts` (Zod). Register request-id middleware, the global response interceptor, exception filter, `/api` prefix and Swagger during bootstrap.
 
 ## 9. Rules (MUST / MUST NOT)
 - MUST scaffold with `nest new`.
@@ -62,7 +62,7 @@ Option `--type esm|cjs`: ESM uses Vitest, CommonJS uses Jest [V]. The kit templa
 - Swagger `createDocument` fails under esbuild/tsx when `@ApiProperty` has no explicit `type` [T].
 
 ## 11. Prompt fragment
-> Scaffold with `nest new`. Follow ARCHITECTURE.md section 1. Controllers parse input and call services; services return raw values. Validate with ZodValidationPipe. Register the global interceptor, filter and requestId middleware. Document every endpoint with the envelope decorators. Node >= 22.12 (and >= 22.22.3 for the Nest CLI generators).
+> Scaffold with `nest new`. Follow `docs/ARCHITECTURE.md`. Controllers parse input and call services; services return raw values. Validate with ZodValidationPipe. Register the global interceptor, filter and requestId middleware. Document every endpoint with the envelope decorators. Node >= 22.12 (and >= 22.22.3 for the Nest CLI generators).
 
 ## 12. Verification
 | Claim | Mark | Evidence |
@@ -70,7 +70,7 @@ Option `--type esm|cjs`: ESM uses Vitest, CommonJS uses Jest [V]. The kit templa
 | Scaffold, flags, default scripts, Node | [V] | docs.nestjs.com/first-steps |
 | Interceptor, filter, requestId, Zod pipe, Swagger envelope, observability | [T] | `nest/test/contract.smoke.ts` on Nest 12.6.0 |
 | Jest e2e suite | [?] | the smoke test is not a Jest suite |
-| `--type cjs` gives the layout the kit expects | [?] | not scaffolded here |
+| `--type cjs` gives the proposed project layout | [?] | not scaffolded here |
 
 ## 13. Sources
 - https://docs.nestjs.com/first-steps

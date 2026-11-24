@@ -15,7 +15,7 @@ conflicts_with: []
 # Next.js (App Router)
 
 ## 1. What it is, in one line
-React framework with server rendering and file-based routing. Port `5CNN`. Folder layout: `docs/ARCHITECTURE.md` section 4.
+React framework with server rendering and file-based routing. Port `5CNN`. Folder layout: `docs/ARCHITECTURE.md`.
 
 ## 2. Choose it when / do not choose it when
 Choose for public, indexed pages or when you need server rendering. Choose Vite for pure dashboards.
@@ -33,13 +33,13 @@ npx create-next-app@latest <name>
 The command is the official one but its prompts and generated files were not checked against the current docs [?]. Keep whatever the scaffold generates.
 
 ## 5. Install
-`axios` and the packages of the chosen CSS document; `@tanstack/react-query` only if TanStack Query is selected. Copy `frontend/src/*` from the kit.
+`axios` and the packages of the chosen CSS document; `@tanstack/react-query` only if TanStack Query is selected. Implement shared API handling, error messages, query states and design tokens in the project as specified in the project guide.
 
 ## 6. Folder structure
-`docs/ARCHITECTURE.md` section 4. Same `features/`, `components/`, `lib/`, `helpers/`, `styles/` as Vite; only the routing layer differs.
+`docs/ARCHITECTURE.md`. Same `features/`, `components/`, `lib/`, `helpers/`, `styles/` as Vite; only the routing layer differs.
 
 ## 7. package.json scripts
-`templates/package-scripts.frontend.json`, `next` variant: `next dev -p 5CNN`.
+Configure `dev` as `next dev -p 5CNN`, preserve the scaffold build/start scripts and add real typecheck, lint and test commands.
 
 ## 8. Config files
 `.env.local` with `NEXT_PUBLIC_API_URL=http://localhost:3CNN/api`. `src/app/globals.css` imports `styles/tokens.css`.
@@ -62,7 +62,7 @@ The command is the official one but its prompts and generated files were not che
 |---|---|---|
 | Version and Node | [V] | `npm view` 2026-11-23 |
 | Scaffold prompts and defaults | [?] | not fetched |
-| Kit files inside a Next.js app | [?] | not built |
+| Shared infrastructure inside a Next.js app | [?] | not built |
 
 ## 13. Sources
 - `npm view next create-next-app`

@@ -29,7 +29,7 @@
       }
     ],
     "parkingLot": [
-      "Media library (file uploads need a storage library that is not in the Contract Kit library yet)"
+      "Media uploads require a selected storage service and an explicit integration contract."
     ]
   },
   "stack": {

@@ -48,7 +48,7 @@ None.
 - MUST hash passwords with `bcryptjs`.
 
 ## 10. Known pitfalls
-- The kit ships the types and the contract, not the guard or login service; the first app writes them once and copies them back.
+- Implement auth types, middleware or guards, login and refresh services in the project according to the documented auth contract.
 
 ## 11. Prompt fragment
 > Auth: `POST /api/auth/login` -> `{ accessToken, refreshToken, expiresIn, user }`; `GET /api/auth/me`. Token payload `{ sub, role, iat, exp }`, access 15m, refresh 7d. 401 UNAUTHORIZED vs 403 FORBIDDEN.
@@ -57,7 +57,7 @@ None.
 | Claim | Mark | Evidence |
 |---|---|---|
 | Contract text | [T] | `nest/src/common/auth/auth.types.ts`; the access rule for observability is tested |
-| Login / refresh implementation | [?] | not in the kit |
+| Login / refresh implementation | [?] | not yet verified in a running project |
 | Version | [V] | `npm view` 2026-11-23 |
 
 ## 13. Sources

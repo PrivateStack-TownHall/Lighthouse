@@ -29,7 +29,7 @@ Choose for document-shaped data. Do not choose it when you want SQL migrations, 
 | Server version and compose image | not checked | [?] |
 
 ## 4. Scaffold (official CLI first)
-No scaffold. The kit compose template runs PostgreSQL: replace the `db` service with MongoDB yourself [?].
+Create a MongoDB compose service with a pinned image, persistent volume, environment-supplied credentials and a healthcheck; verify the project configuration [?].
 
 ## 5. Install
 Through Mongoose (`npm install mongoose`), see `orm/mongoose.md`.
@@ -50,10 +50,10 @@ No migration CLI in the library: `db:migrate` has no MongoDB equivalent here; ke
 
 ## 10. Known pitfalls
 - Prisma's MongoDB connector needs a replica set for transactions (prisma.io); not relevant with Mongoose, but relevant if you switch [V].
-- The kit's `docs/CONVENTIONS.md` speaks of tables and columns: read them as collections and fields.
+- `docs/CONVENTIONS.md` speaks of tables and columns: read them as collections and fields.
 
 ## 11. Prompt fragment
-> Database is MongoDB, accessed with Mongoose. Use UUID strings as `_id` (FR-009), snake_case field names in the database with camelCase JSON, `created_at` / `updated_at` in UTC, money as integer rupiah. The kit compose template is PostgreSQL: replace its `db` service with MongoDB.
+> Database is MongoDB, accessed with Mongoose. Use UUID strings as `_id` (FR-009), snake_case field names in the database with camelCase JSON, `created_at` / `updated_at` in UTC, money as integer rupiah. Configure the compose service and database scripts specifically for MongoDB.
 
 ## 12. Verification
 | Claim | Mark | Evidence |

@@ -47,7 +47,7 @@ Base URL from `VITE_API_URL` / `NEXT_PUBLIC_API_URL`. Token from your auth store
 - MUST map `error.code` to a toast message with `lib/error-messages.ts`.
 
 ## 10. Known pitfalls
-- Refresh-token retry logic is not in the kit; write it in `api-client.ts` once, not per feature.
+- Implement refresh-token retry logic in the shared API client once, not per feature; limit retries to prevent loops.
 
 ## 11. Prompt fragment
 > All HTTP goes through `src/lib/api-client.ts` (axios). Never import axios in components or features. Use `unwrapItem`, `unwrapList` or `unwrapPage` and show errors through `error-messages.ts`.

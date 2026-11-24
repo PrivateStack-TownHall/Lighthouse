@@ -29,7 +29,7 @@ Choose when the hosting or an existing system requires MySQL. Otherwise PostgreS
 | Docker image and version for compose | not checked | [?] |
 
 ## 4. Scaffold (official CLI first)
-No scaffold. The kit compose template runs PostgreSQL: replace the `db` service with a MySQL image yourself [?].
+Create a `db` compose service for MySQL with a pinned image, persistent volume, environment-supplied credentials and a healthcheck; verify the project configuration [?].
 
 ## 5. Install
 Driver per ORM: Sequelize `mysql2`, Prisma `@prisma/adapter-mariadb` (see the ORM document).
@@ -50,10 +50,10 @@ No application folders.
 - MUST pin the major version in compose.
 
 ## 10. Known pitfalls
-- The kit compose template, `db:create` script and env example assume PostgreSQL: adapt all three [?].
+- Verify compose, database scripts and environment values against the selected database [?].
 
 ## 11. Prompt fragment
-> Database is MySQL. UUID primary keys (one storage type for the whole app), snake_case columns, `created_at` / `updated_at` in UTC, money as integer rupiah. The kit compose template is PostgreSQL: replace its `db` service with MySQL.
+> Database is MySQL. UUID primary keys (one storage type for the whole app), snake_case columns, `created_at` / `updated_at` in UTC, money as integer rupiah. Configure the compose service and database scripts specifically for MySQL.
 
 ## 12. Verification
 | Claim | Mark | Evidence |

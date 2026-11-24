@@ -15,7 +15,7 @@ conflicts_with: []
 # React + Vite
 
 ## 1. What it is, in one line
-Single-page React app built with Vite. Port `5CNN`. Folder layout: `docs/ARCHITECTURE.md` section 3.
+Single-page React app built with Vite. Port `5CNN`. Folder layout: `docs/ARCHITECTURE.md`.
 
 ## 2. Choose it when / do not choose it when
 Choose for dashboards and tools behind a login, where server rendering and SEO do not matter. Choose Next.js instead for public, indexed pages.
@@ -34,19 +34,19 @@ Choose for dashboards and tools behind a login, where server rendering and SEO d
 ```bash
 npm create vite@latest <name> -- --template react-ts   # the extra -- is required on npm 7+
 ```
-Use `react` instead of `react-ts` for plain JavaScript (the kit front end files are TypeScript).
+Use `react` instead of `react-ts` for plain JavaScript.
 
 ## 5. Install
-`npm install`, then the packages of the chosen CSS document and the selected tools (`axios`; `@tanstack/react-query` only if TanStack Query is selected). Copy `frontend/src/*` from the kit.
+`npm install`, then the packages of the chosen CSS document and the selected tools (`axios`; `@tanstack/react-query` only if TanStack Query is selected). Implement shared API handling, error messages, query states and design tokens in the project as specified in the project guide.
 
 ## 6. Folder structure
-`docs/ARCHITECTURE.md` section 3: `app/`, `pages/`, `features/<feature>/`, `components/`, `lib/`, `helpers/`, `styles/`.
+`docs/ARCHITECTURE.md`: `app/`, `pages/`, `features/<feature>/`, `components/`, `lib/`, `helpers/`, `styles/`.
 
 ## 7. package.json scripts
-`templates/package-scripts.frontend.json`, `vite` variant. The scaffold itself ships `dev`, `build`, `preview` [V]; the kit adds `typecheck`, `lint`, `test`, `start`.
+Keep the scaffold `dev`, `build` and `preview` scripts; configure `typecheck`, `lint`, `test` and `start` with real commands for the chosen language and runner.
 
 ## 8. Config files
-`.env` with `VITE_API_URL=http://localhost:3CNN/api` (`templates/env.example.frontend`). `vite.config.ts` with the Tailwind plugin. Dev server port from `docs/PORTS.md`: `vite --port 5CNN`.
+`.env` with `VITE_API_URL=http://localhost:3CNN/api`. `vite.config.ts` with the Tailwind plugin. Dev server port from `docs/PORTS.md`: `vite --port 5CNN`.
 
 ## 9. Rules (MUST / MUST NOT)
 - MUST scaffold with `create vite`; MUST NOT hand-write the Vite config structure.
@@ -57,10 +57,10 @@ Use `react` instead of `react-ts` for plain JavaScript (the kit front end files 
 
 ## 10. Known pitfalls
 - Only variables that start with `VITE_` reach the browser.
-- The kit front end has not been opened in a browser; check `QueryState` and the toast mapping by hand on the first app.
+- Check the implemented `QueryState` and error-message mapping in a browser; typechecking alone does not verify rendering.
 
 ## 11. Prompt fragment
-> Scaffold with `npm create vite@latest <name> -- --template react-ts`. Follow the folder layout in ARCHITECTURE.md section 3. Data access only in `features/<feature>/api.ts` through `lib/api-client.ts`. Port is 5CNN. Node must satisfy `^20.19.0 || >=22.12.0`.
+> Scaffold with `npm create vite@latest <name> -- --template react-ts`. Follow the folder layout in `docs/ARCHITECTURE.md`. Data access only in `features/<feature>/api.ts` through `lib/api-client.ts`. Port is 5CNN. Node must satisfy `^20.19.0 || >=22.12.0`.
 
 ## 12. Verification
 | Claim | Mark | Evidence |

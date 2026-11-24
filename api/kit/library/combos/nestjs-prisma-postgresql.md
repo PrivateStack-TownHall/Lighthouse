@@ -10,14 +10,14 @@ members: [nestjs, prisma, postgresql, typescript]
 # NestJS + Prisma + PostgreSQL
 
 ## Wiring
-- `PrismaService` extends or wraps a `PrismaClient` built with the `@prisma/adapter-pg` adapter (Prisma 7) [V in `prisma.md`].
+- `PrismaService` extends or wraps a `PrismaClient` built with the `@prisma/adapter-pg` adapter (Prisma 7) [recorded in the Prisma guidance].
 - Observability probe: `useFactory: (prisma) => ({ ping: async () => { await prisma.$queryRaw\`SELECT 1\`; } })` [probe shape T; the Prisma call was not run].
-- Scripts: `templates/package-scripts.backend-nest-prisma.json`.
+- Configure generate, migrate and seed scripts in the backend package and verify them against the installed Prisma major.
 
 ## Open points (verify on the first app)
 | Point | Mark |
 |---|---|
-| Template scripts (`prisma generate` in `dev`/`build`/`typecheck`/`postinstall`) still right on Prisma 7 | [?] |
+| Lifecycle scripts (`prisma generate` in `dev`/`build`/`typecheck`/`postinstall`) still right on Prisma 7 | [?] |
 | Seed: `ts-node --transpile-only prisma/seed.ts` vs how v7 configures seeding | [?] |
 | Prisma 7 is ESM-first; a `--type cjs` Nest scaffold may need changes | [?] |
 | Generated client output (`generated/prisma`) and `.gitignore` | [?] |

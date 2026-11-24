@@ -10,7 +10,7 @@ import { createApp } from '../src/app.js';
 const apiRoot = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const env = { JWT_SECRET: 'test-secret-test-secret-test-secret-123', CORS_ORIGIN: 'http://localhost:5102' };
 let server; let base; let dir; let store; let tokens = {};
-const example = JSON.parse(await readFile(join(apiRoot, 'kit/library/examples/vibedesk.config.json'), 'utf8'));
+const example = JSON.parse(await readFile(join(apiRoot, 'kit/library/examples/example-cms.config.json'), 'utf8'));
 
 const call = async (method, path, { token, body } = {}) => {
   const res = await fetch(`${base}${path}`, { method, headers: { 'content-type': 'application/json', ...(token && { authorization: `Bearer ${token}` }) }, body: body && JSON.stringify(body) });
@@ -78,7 +78,7 @@ test('generate: ADMIN gets the files and a history row; USER is 403; invalid is 
   const r = await call('POST', '/generations', { token: tokens.admin.accessToken, body: { config: example } });
   assert.equal(r.status, 201);
   assert.ok(r.body.data.files.some((f) => f.path === 'PROJECT_CONTRACT.md'));
-  assert.ok(r.body.data.markdown.includes('# Project Contract: vibeDesk'));
+  assert.ok(r.body.data.markdown.includes('# Project Contract: Example CMS'));
   assert.equal((await call('POST', '/generations', { token: tokens.user.accessToken, body: { config: example } })).status, 403);
   const bad = await call('POST', '/generations', { token: tokens.admin.accessToken, body: { config: { ...example, stack: { ...example.stack, orm: 'typeorm' } } } });
   assert.equal(bad.status, 422); assert.equal(bad.body.error.code, 'UNPROCESSABLE'); assert.match(bad.body.error.details[0].message, /typeorm/);
@@ -87,14 +87,14 @@ test('generate: ADMIN gets the files and a history row; USER is 403; invalid is 
 });
 
 test('projects CRUD with pagination, 404 and roles; rows stored snake_case', async () => {
-  const c = await call('POST', '/projects', { token: tokens.admin.accessToken, body: { name: 'vibeDesk', config: example } });
-  assert.equal(c.status, 201); const id = c.body.data.id; assert.equal(c.body.data.slug, 'vibedesk');
+  const c = await call('POST', '/projects', { token: tokens.admin.accessToken, body: { name: 'Example CMS', config: example } });
+  assert.equal(c.status, 201); const id = c.body.data.id; assert.equal(c.body.data.slug, 'example-cms');
   const raw = (await store.read('projects'))[0]; assert.ok(raw.created_at && !raw.createdAt);
-  const l = await call('GET', '/projects?limit=1&q=vibe', { token: tokens.user.accessToken });
+  const l = await call('GET', '/projects?limit=1&q=example', { token: tokens.user.accessToken });
   assert.equal(l.body.meta.pagination.total, 1); assert.equal(l.body.data[0].id, id);
   assert.equal((await call('GET', '/projects?limit=101', { token: tokens.user.accessToken })).body.error.code, 'VALIDATION_ERROR');
-  const u = await call('PATCH', `/projects/${id}`, { token: tokens.admin.accessToken, body: { name: 'vibeDesk 2' } });
-  assert.equal(u.body.data.slug, 'vibedesk-2');
+  const u = await call('PATCH', `/projects/${id}`, { token: tokens.admin.accessToken, body: { name: 'Example CMS 2' } });
+  assert.equal(u.body.data.slug, 'example-cms-2');
   assert.equal((await call('PATCH', `/projects/${id}`, { token: tokens.user.accessToken, body: { name: 'x' } })).status, 403);
   assert.equal((await call('DELETE', `/projects/${id}`, { token: tokens.admin.accessToken })).body.data, null);
   const gone = await call('GET', `/projects/${id}`, { token: tokens.admin.accessToken });

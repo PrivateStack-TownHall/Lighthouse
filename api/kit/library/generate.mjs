@@ -261,7 +261,7 @@ function buildContext(c, lib, st, rules, level, problems) {
     st.combo ? `Kit combo document: \`library/${st.combo.doc}\`.` : 'No kit combo document: write the glue between the choices yourself and mark it unverified.'].join('\n');
 
   const envApi = sub(lib.kitTemplates['env.example']).replace(/3101/g, ports.api).replace(/5101/g, ports.ui ?? ports.api).replace(/2101/g, ports.db)
-    .replace('# APP_NAME=Orange LMS', `APP_NAME=${p.name}`).replace('# APP_TYPE=LMS', '# APP_TYPE=').trim();
+    .replace('# APP_NAME=Example App', `APP_NAME=${p.name}`).replace('# APP_TYPE=EXAMPLE', '# APP_TYPE=').trim();
   // The kit env example is PostgreSQL: other databases take the URL form of their own library document.
   const dbUrl = s.database !== 'postgresql' && docs[s.database] ? section(docs[s.database].text, 8).match(/DATABASE_URL=[^`\s]+/)?.[0] : null;
   const envApiFinal = dbUrl ? envApi.replace(/^DATABASE_URL=.*$/m, sub(dbUrl)) : envApi;
@@ -596,7 +596,7 @@ function renderProjectContract(ctx, lib) {
       `| Ports | API ${ports.api}${hasUi ? ` · UI ${ports.ui}` : ''} · DB ${ports.db} |`].join('\n'),
     'api.baseUrl': api, 'api.endpoints': endpoints, 'api.endpointNotes': notes,
     'conv.envelope': section(conv, 1), 'conv.query': section(conv, 3), 'conv.auth': section(conv, 5), 'conv.data': section(conv, 4),
-    'obs.shapes': section(lib.kitDocs['OBSERVABILITY.md'], 'Response shapes').split('Byte Burger').join(p.name),
+    'obs.shapes': section(lib.kitDocs['OBSERVABILITY.md'], 'Response shapes').split('Example App').join(p.name),
     'data.tables': tables, 'impl.table': implTable,
     dod: section(lib.kitDocs['DEFINITION_OF_DONE.md'], 'Done checklist'),
   }, 'PROJECT_CONTRACT.md');

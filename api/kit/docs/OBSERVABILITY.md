@@ -1,6 +1,6 @@
 # Observability (standard module)
 
-Built from your Bootcamp `src/observability` folder (activities, health, monitoring, stats, public resources). The generic parts are in the kit; the parts that need your tables stay in each app.
+Based on a reference `src/observability` module (activities, health, monitoring, stats, public resources). Shared behavior belongs in the kit; data-specific behavior stays in each app.
 
 | Part | Route | In kit? | Notes |
 |---|---|---|---|
@@ -23,7 +23,7 @@ ObservabilityModule.register({
     useFactory: (prisma: PrismaService) => ({ ping: async () => { await prisma.$queryRaw`SELECT 1`; } }),
     inject: [PrismaService],
   },
-  appInfo: { name: 'Byte Burger', type: 'BURGER', version: '1.0.0' }, // or APP_NAME / APP_TYPE / APP_VERSION
+  appInfo: { name: 'Example App', type: 'EXAMPLE', version: '1.0.0' }, // or APP_NAME / APP_TYPE / APP_VERSION
   activitySources: [ProductActivitySource, OrderActivitySource],
   access: allowRoles(['ADMIN', 'STAFF'], (req) => req.user?.role), // required; ALLOW_ALL only in dev/tests
 });
@@ -33,7 +33,7 @@ ObservabilityModule.register({
 
 ```js
 app.use('/api', createObservabilityRouter({
-  name: 'Orange LMS', type: 'LMS', version: '1.0.0',
+  name: 'Example App', type: 'EXAMPLE', version: '1.0.0',
   checkDatabase: async () => { await sequelize.authenticate(); },
   activitySources: [orderActivitySource],
   access: allowRoles(['ADMIN', 'STAFF'], (req) => req.user?.role), // required; allowAll only in dev/tests
@@ -45,8 +45,8 @@ Set the name explicitly. If neither `appInfo` nor `APP_NAME` is set, the app rep
 ## Response shapes
 
 ```jsonc
-// GET /api/health  (HTTP 200 even when DOWN, same as the Bootcamp version)
-{ "status": "UP" | "DOWN", "application": "Byte Burger", "database": "CONNECTED" | "DISCONNECTED",
+// GET /api/health  (HTTP 200 even when DOWN)
+{ "status": "UP" | "DOWN", "application": "Example App", "database": "CONNECTED" | "DISCONNECTED",
   "version": "1.0.0", "timestamp": "ISO", "uptime": 123 }
 
 // GET /api/monitoring
@@ -56,7 +56,7 @@ Set the name explicitly. If neither `appInfo` nor `APP_NAME` is set, the app rep
 
 // GET /api/activities  (max 30 entries, newest first, 5 per source)
 [ { "id": "order-12", "type": "ORDER_CREATED", "entity": "Order", "title": "#12",
-    "description": "Order PENDING", "createdAt": "ISO", "application": "Byte Burger" } ]
+    "description": "Order PENDING", "createdAt": "ISO", "application": "Example App" } ]
 ```
 
 All of these are wrapped in the standard envelope (`CONVENTIONS.md`).
@@ -82,7 +82,7 @@ class OrderActivitySource implements ActivitySource {
 Keep this base so a dashboard can read every app the same way, and put your counts in groups:
 
 ```jsonc
-{ "application": { "name": "Byte Burger", "type": "BURGER" },
+{ "application": { "name": "Example App", "type": "EXAMPLE" },
   "orders": { "total": 200, "pending": 10, "completed": 180, "cancelled": 10 },
   "latest": { "order": "ISO | null" } }
 ```
@@ -90,16 +90,16 @@ Keep this base so a dashboard can read every app the same way, and put your coun
 ## Public resources (per app)
 
 `GET /api/public/<resource>` (plural kebab-case) and `GET /api/public/<resource>/:id`.
-- Read-only, no authentication, for the dashboard (Terra).
+- Read-only, no authentication, for the dashboard.
 - Scoped to this application's rows when the database is shared (`common/scope`).
 - Lists use the standard query (`?page=&limit=&sort=&q=`) and return `meta.pagination`.
 - An unknown id is `404 NOT_FOUND`.
 
-## Moving a Bootcamp API to this module
+## Moving an existing API to this module
 
-1. `'Byte Burger'` is hard-coded on 15 lines (services, DTO examples, Swagger examples): replace with `appInfo`.
+1. Replace any hard-coded application name in services, DTO examples and Swagger examples with `appInfo`.
 2. Services currently return `{ data }`. With the standard interceptor that becomes `data.data`. **Return the raw value.**
-3. `findOne` returns `{ data: null }` for an unknown id today. The standard is `404 NOT_FOUND`; check that the Terra front end does not rely on `data: null`.
+3. If `findOne` returns `{ data: null }` for an unknown id, change it to `404 NOT_FOUND` and check that the front end does not rely on `data: null`.
 4. The public lists return every row. Add pagination before the tables grow.
 5. Swap `SwaggerSuccess({...})` examples for `ApiOkEnvelope(Dto)` / `ApiListEnvelope(Dto)`.
 
@@ -112,5 +112,5 @@ Keep this base so a dashboard can read every app the same way, and put your coun
 | `/api/public/<resource>` | Open, but **no personal data** (below) |
 
 - The kit enforces this: `access` is a **required** option of `ObservabilityModule.register` / `createObservabilityRouter`. The kit does not know your auth stack, so you pass `allowRoles(['ADMIN','STAFF'], (req) => req.user?.role)`; your own auth guard or middleware must run first and set `req.user`. `ALLOW_ALL` / `allowAll` exist for development and tests only.
-- Why: in the Bootcamp code `public/orders`, `public/cart`, `public/favorites`, `public/payments` and `public/order-status-history` returned each customer's `fullName` and `email` without authentication, and `/monitoring` and `/activities` were open.
+- Why: in the reference implementation, public order and payment routes exposed customer names and emails, while `/monitoring` and `/activities` were open.
 - Public resources (`public/<resource>`) are written per app and are **not** in the kit. When you write them: return an allow-list DTO (never the raw row), drop email and phone, and mask names with `maskName` (`Budi Santoso` -> `Budi S.`; in `helpers/`). Add a test that the response contains no `email` key.

@@ -4,9 +4,9 @@
 #   docker compose --env-file .env.docker --profile db --profile api up -d
 #   docker compose --env-file .env.docker --profile db --profile api --profile ui up -d
 #
-# .env.docker example (Orange LMS = category 1, NN 01):
-#   COMPOSE_PROJECT_NAME=a1-orange-lms
-#   APP_SLUG=orange-lms
+# .env.docker example (category 1, NN 01):
+#   COMPOSE_PROJECT_NAME=a1-example-app
+#   APP_SLUG=example-app
 #   PORT_API=3101
 #   PORT_UI=5101
 #   PORT_DB=2101

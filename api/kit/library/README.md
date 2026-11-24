@@ -21,7 +21,7 @@ library/
 ├─ outputs/templates/       # fixed templates of the outputs
 ├─ presets/                 # stack presets for the Preset dropdown
 ├─ core/rule-hints.json     # patterns that flag a Custom Rule as a possible Fixed Rule conflict
-├─ examples/                # example configs (vibedesk = the mockup)
+├─ examples/                # neutral example configurations
 ├─ tests/                   # node --test "library/tests/*.test.mjs"
 └─ validate.mjs             # structure check of this folder
 ```

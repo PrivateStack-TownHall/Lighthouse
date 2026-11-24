@@ -1,27 +1,19 @@
-# Definition of Done (v1)
+# Definition of Done
 
-Write the scope for v1 **before** starting. When every box is checked, v1 is done. That is a fact, not a decision to re-make.
+Completion is measured against the project purpose, agreed scope and evidence below. A feature list is optional; there is no required feature count or release-stage freeze.
 
-## Before starting
-- [ ] One-line purpose and 3-7 must-have features written down
-- [ ] Category (A1/A2/A3), NN and ports assigned (`docs/PORTS.md`)
-- [ ] Only one new app is in progress at a time
+## Before implementation
+- Record the purpose, intended users, scope and exclusions from the project description and custom rules.
+- Turn the requested outcomes into observable acceptance criteria. Ask only when an unresolved decision changes behavior, data, access or scope.
+- Record applicable integration contracts, environment requirements and local ports.
 
 ## Done checklist
-- [ ] Follows the response contract (`docs/CONVENTIONS.md`)
-- [ ] Scripts match the standard (`dev`, `build`, `typecheck`, `lint`, `test`, `db:*`)
-- [ ] `.env.example` complete; env validated by Zod on boot
-- [ ] `/api/health`, `/api/version`, `/api/public` respond
-- [ ] Swagger at `/api/docs` is complete
-- [ ] Tests pass: contract test, auth test, one e2e happy path
-- [ ] `typecheck` and `lint` are clean
-- [ ] `CHANGELOG.md` has a `1.0.0` entry
-- [ ] Deployed, and the app registry row is updated (URL, repo link, ports)
+- [ ] The agreed outcomes work end to end; each acceptance criterion has a recorded result.
+- [ ] Applicable input validation, error handling and access restrictions work, including negative paths.
+- [ ] Changes have appropriate regression coverage; no fake responses or unfinished placeholders are presented as complete.
+- [ ] Applicable build, typecheck, lint and test commands pass; exact commands and results are recorded.
+- [ ] Setup, configuration and relevant implementation decisions are documented and reproducible.
+- [ ] Unverified assumptions, skipped checks and remaining blockers are disclosed.
 
-## v1 freeze
-- v1 is **not redesigned** after this checklist is green.
-- Every new idea goes to the parking list below, not into v1.
-- Ideas are reviewed only after v1 is released.
-
-## v1.1 parking lot
-- (idea)
+## Evidence and scope changes
+Record each criterion, its verification command or manual procedure, the result and any remaining blocker. Start every checkbox unchecked; generated documentation is not evidence of implementation. Mark a criterion not applicable only with a reason. Document scope changes and update affected acceptance criteria before implementing them; no mandatory release labels or future-version buckets apply.

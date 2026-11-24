@@ -6,7 +6,7 @@ Four stacks, one mental model. The same words mean the same thing in every stack
 |---|---|
 | `common/` | Shared plumbing of an API (contract, filters, middleware, pagination, config). Never contains business logic. |
 | `modules/<feature>/` | One folder per business feature in an API. |
-| `observability/` | The standard module (`/api/health`, `/monitoring`, `/activities`, `/version`, `/public`). See `OBSERVABILITY.md`. |
+| `observability/` | The standard module (`/api/health`, `/monitoring`, `/activities`, `/version`, `/public`). See `docs/OBSERVABILITY.md`. |
 | `features/<feature>/` | One folder per business feature in a front end. |
 | `lib/` | Front-end plumbing (`api-client`, error messages). |
 | `helpers/` | Small **pure** functions (format, slug, mask). No I/O, no framework imports, no business rules. In the API and in the front end. |
@@ -24,9 +24,9 @@ Four stacks, one mental model. The same words mean the same thing in every stack
 ├─ api/                        # NestJS or Express
 ├─ ui/                         # Vite React or Next.js
 ├─ docs/                       # app-level docs (below)
-├─ docker-compose.yml          # profiles: db, api, ui  (templates/docker-compose.template.yml)
+├─ docker-compose.yml          # profiles: db, api, ui
 ├─ .env.docker                 # ports from docs/PORTS.md
-├─ package.json                # delegating scripts only (templates/package-scripts.root.json)
+├─ package.json                # delegating scripts only
 ├─ CHANGELOG.md
 └─ README.md
 ```
@@ -59,9 +59,9 @@ api/
 │  │  ├─ pipes/                   # ZodValidationPipe
 │  │  ├─ scope/                   # ONLY when several APIs share one database (see below)
 │  │  └─ swagger/                 # ApiOkEnvelope, ApiListEnvelope, ApiPaginatedEnvelope
-│  ├─ helpers/index.ts            # maskName, maskEmail, slugify, toIsoUtc (from the kit)
+│  ├─ helpers/index.ts            # maskName, maskEmail, slugify, toIsoUtc (implement in the project)
 │  ├─ prisma/                     # prisma.module.ts, prisma.service.ts
-│  ├─ observability/              # standard module (copied from the kit)
+│  ├─ observability/              # standard module (implement in the project)
 │  └─ modules/
 │     └─ <feature>/               # kebab-case, plural: products, order-items
 │        ├─ <feature>.module.ts
@@ -85,7 +85,7 @@ Rules
 
 ## 2. Express + Sequelize
 
-The kit's Express code is ESM (`"type": "module"`). It mirrors the Nest layout: the same `common/` and `observability/` names, feature modules instead of folders per type.
+The Express application uses ESM (`"type": "module"`). It mirrors the Nest layout: the same `common/` and `observability/` names, feature modules instead of folders per type.
 
 ```
 api/
@@ -97,12 +97,12 @@ api/
 │  │  ├─ contract/response.js     # sendSuccess, sendCreated, sendPaginated, sendError, AppError
 │  │  ├─ middlewares/             # request-id, error-handler, validate, auth
 │  │  └─ pagination/
-│  ├─ helpers/index.js            # from the kit
+│  ├─ helpers/index.js            # implement in the project
 │  ├─ database/
 │  │  ├─ models/
 │  │  ├─ migrations/
 │  │  └─ seeders/
-│  ├─ observability/              # observability.router.js (copied from the kit)
+│  ├─ observability/              # observability.router.js (implement in the project)
 │  └─ modules/
 │     └─ <feature>/
 │        ├─ <feature>.routes.js
@@ -144,13 +144,13 @@ ui/
 │  ├─ components/
 │  │  ├─ ui/                      # primitives (Button, Input, Dialog)
 │  │  ├─ layout/
-│  │  └─ QueryState.tsx           # loading / error / empty (from the kit)
+│  │  └─ QueryState.tsx           # loading / error / empty (implement in the project)
 │  ├─ lib/
-│  │  ├─ api-client.ts            # from the kit
-│  │  └─ error-messages.ts        # from the kit
-│  ├─ helpers/index.ts            # formatIdr, formatDateTime, slugify (from the kit)
+│  │  ├─ api-client.ts            # implement in the project
+│  │  └─ error-messages.ts        # implement in the project
+│  ├─ helpers/index.ts            # formatIdr, formatDateTime, slugify (implement in the project)
 │  ├─ stores/                     # Zustand, only for client state
-│  ├─ styles/tokens.css           # from the kit, the only place with raw colors
+│  ├─ styles/tokens.css           # implement in the project, the only place with raw colors
 │  └─ types/
 ├─ index.html                     # font <link> (see tokens.css)
 ├─ .env.example                   # VITE_API_URL
@@ -182,7 +182,7 @@ Rules (both front ends)
 - Components use semantic tokens only (`docs/DESIGN_SYSTEM.md`), never raw hex.
 - The only difference between Vite and Next.js is the routing layer (`app/router.tsx` + `pages/` vs `src/app/`). `features/`, `components/`, `lib/`, `styles/` are the same.
 - In Next.js, a component that takes callbacks (e.g. `QueryState` with `onRetry`) must be rendered from a Client Component.
-- Environment: `VITE_API_URL` / `NEXT_PUBLIC_API_URL` = `http://localhost:3CNN/api` (see `templates/env.example.frontend`).
+- Environment: `VITE_API_URL` / `NEXT_PUBLIC_API_URL` = `http://localhost:3CNN/api` (configure in the frontend environment example).
 
 ---
 
@@ -225,6 +225,6 @@ Frontend: `lib/` is plumbing (api-client, error messages); `helpers/` is pure fu
 ## 8. Express uses functions, Nest uses classes
 Both keep the controller / service split. Express modules export plain functions (`listProducts`, `createProduct`): classes in Express need `this` binding when passed to a route and add nothing. Nest uses classes because its DI is built on them.
 
-## 9. Parked for v1.1
+## 9. Optional architecture choices
 - Zod request bodies in Swagger (`nestjs-zod` or hand-written `@ApiProperty` DTO classes). Today the Zod pipe validates and response DTOs document.
 - A shared package (`@vsg/api-contract`) instead of copying `common/`.

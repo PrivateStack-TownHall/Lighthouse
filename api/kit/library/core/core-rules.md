@@ -8,7 +8,7 @@ verified_on: 2026-11-23
 
 # Core Rules (Fixed Rules)
 
-These are the **Fixed Rules (System)** of Lighthouse: they apply to every project and a project rule may not silently override them. Each rule has an ID so a Custom Rule that conflicts can name it. They are a restatement of the Contract Kit docs; if the two ever differ, the doc in `docs/` wins.
+These are the **Fixed Rules (System)** of Lighthouse: they apply where relevant to the selected project scope and a project rule may not silently override them. Each rule has an ID so a Custom Rule that conflicts can name it. The exported project documents contain the implementation requirements.
 
 | ID | Rule | Source |
 |---|---|---|
@@ -32,7 +32,7 @@ These are the **Fixed Rules (System)** of Lighthouse: they apply to every projec
 | FR-018 | Controllers parse and respond; services hold logic and return raw values; not found is a 404, never `{ data: null }` | `docs/ARCHITECTURE.md` 1 |
 | FR-019 | Front end: components use semantic tokens only; data goes through `lib/api-client`; loading, empty and error states use `QueryState` | `docs/DESIGN_SYSTEM.md`, `docs/ARCHITECTURE.md` |
 | FR-020 | Swagger at `/api/docs`; every endpoint is documented; every feature has tests | `docs/CONVENTIONS.md` 2 |
-| FR-021 | A project defines "done" before it starts and freezes v1 | `docs/DEFINITION_OF_DONE.md` |
+| FR-021 | Define completion through scope-based acceptance criteria and verification evidence in docs/DEFINITION_OF_DONE.md; feature lists are optional, with no required count or release-stage freeze | `docs/DEFINITION_OF_DONE.md` |
 | FR-022 | Use the official CLI to scaffold (`create vite`, `nest new`, `create-next-app`, `prisma init`, `sequelize-cli init`); never recreate an official structure by hand | product spec |
 
 Not rules (repo choices, deliberately not standardized): Conventional Commits, `.nvmrc`, Prettier, `tsconfig` strictness, CI.

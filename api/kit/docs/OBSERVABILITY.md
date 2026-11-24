@@ -1,21 +1,21 @@
 # Observability (standard module)
 
-Based on a reference `src/observability` module (activities, health, monitoring, stats, public resources). Shared behavior belongs in the kit; data-specific behavior stays in each app.
+Implement `src/observability` in the project using the contracts below. Connect database probes and activity sources to real project data.
 
-| Part | Route | In kit? | Notes |
+| Part | Route | Requirement | Notes |
 |---|---|---|---|
-| Health | `GET /api/health` | yes | Checks the database |
-| Monitoring | `GET /api/monitoring` | yes | Node version, memory, DB latency |
-| Activities | `GET /api/activities` | yes (the merge) | You supply one **source** per entity |
-| Version | `GET /api/version` | yes | name, type, version, commit |
-| Public info | `GET /api/public` | yes | name, environment, docsUrl, serverTime |
-| Stats | `GET /api/stats` | shape only | Counts depend on your tables |
-| Public resources | `GET /api/public/<resource>` (+ `/:id`) | pattern only | Read-only lists for the dashboard |
+| Health | `GET /api/health` | Required | Checks the database |
+| Monitoring | `GET /api/monitoring` | Required | Node version, memory, DB latency |
+| Activities | `GET /api/activities` | Required merge | You supply one **source** per entity |
+| Version | `GET /api/version` | Required | name, type, version, commit |
+| Public info | `GET /api/public` | Required | name, environment, docsUrl, serverTime |
+| Stats | `GET /api/stats` | Scope dependent | Counts depend on your tables |
+| Public resources | `GET /api/public/<resource>` (+ `/:id`) | Scope dependent | Read-only lists for the dashboard |
 
 ## Wiring: NestJS
 
 ```ts
-// app.module.ts (see nest/src/app.module.example.ts)
+// Implement this registration interface in app.module.ts
 ObservabilityModule.register({
   imports: [PrismaModule],
   databaseProbe: {
@@ -59,7 +59,7 @@ Set the name explicitly. If neither `appInfo` nor `APP_NAME` is set, the app rep
     "description": "Order PENDING", "createdAt": "ISO", "application": "Example App" } ]
 ```
 
-All of these are wrapped in the standard envelope (`CONVENTIONS.md`).
+All of these are wrapped in the standard envelope (`docs/CONVENTIONS.md`).
 
 ## Activity sources (replaces seven copy-pasted queries)
 
@@ -111,6 +111,6 @@ Keep this base so a dashboard can read every app the same way, and put your coun
 | `/api/monitoring`, `/api/activities` | Token with role `ADMIN` or `STAFF`. 401 `UNAUTHORIZED` without a token, 403 `FORBIDDEN` for `USER`. |
 | `/api/public/<resource>` | Open, but **no personal data** (below) |
 
-- The kit enforces this: `access` is a **required** option of `ObservabilityModule.register` / `createObservabilityRouter`. The kit does not know your auth stack, so you pass `allowRoles(['ADMIN','STAFF'], (req) => req.user?.role)`; your own auth guard or middleware must run first and set `req.user`. `ALLOW_ALL` / `allowAll` exist for development and tests only.
+- The implementation must enforce this: `access` is a **required** option of `ObservabilityModule.register` / `createObservabilityRouter`. Pass `allowRoles(['ADMIN','STAFF'], (req) => req.user?.role)`; your own auth guard or middleware must run first and set `req.user`. `ALLOW_ALL` / `allowAll` exist for development and tests only.
 - Why: in the reference implementation, public order and payment routes exposed customer names and emails, while `/monitoring` and `/activities` were open.
-- Public resources (`public/<resource>`) are written per app and are **not** in the kit. When you write them: return an allow-list DTO (never the raw row), drop email and phone, and mask names with `maskName` (`Budi Santoso` -> `Budi S.`; in `helpers/`). Add a test that the response contains no `email` key.
+- Public resources (`public/<resource>`) are written per app and must be implemented only when requested. When you write them: return an allow-list DTO (never the raw row), drop email and phone, and mask names with `maskName` (`Budi Santoso` -> `Budi S.`; in `helpers/`). Add a test that the response contains no `email` key.

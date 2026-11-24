@@ -11,9 +11,9 @@ Rules:
 - Components use semantic tokens only, never raw hex.
 - Dark mode overrides semantic tokens under `:root[data-theme="dark"]`.
 - A brand may swap `--font-display` when the concept needs it; keep the others.
-- Document the brand's primary hex and the font choice in the app's own `docs/design-system.md`.
+- Document the brand's primary hex and the font choice in the app's own `docs/DESIGN_SYSTEM.md`.
 
-## Worked example: Lighthouse (`frontend/src/styles/tokens.lighthouse.css`)
+## Worked example: Lighthouse palette (illustrative, not a required project brand)
 Source colors: Deep Ocean Blue `#183B56`, Beacon Red `#D94B45`, Pearl White `#F8F6F0`. Fonts: Manrope + Lora.
 The 50-900 scales are derived from those colors; the contrast numbers are computed (WCAG 2.x).
 

@@ -27,7 +27,7 @@ Domain codes (e.g. `SLOT_TAKEN`) are allowed; keep them UPPER_SNAKE_CASE.
 
 ## 2. Routes
 - Prefix `/api` (no version segment). Plural kebab-case: `/api/order-items`.
-- Standard endpoints on every API (the observability module, see `OBSERVABILITY.md`):
+- Standard endpoints on every API (the observability module, see `docs/OBSERVABILITY.md`):
   - `GET /api/health`: `status` (UP/DOWN), `application`, `database` (CONNECTED/DISCONNECTED), `version`, `timestamp`, `uptime`.
   - `GET /api/monitoring`: node, memory, database latency. **Needs token, ADMIN or STAFF.**
   - `GET /api/activities`: latest activity feed. **Needs token, ADMIN or STAFF.**
@@ -64,4 +64,4 @@ Domain codes (e.g. `SLOT_TAKEN`) are allowed; keep them UPPER_SNAKE_CASE.
 - Nest keeps `start:dev` as an alias of `dev`.
 
 ## 7. Observability
-Every API ships the standard `observability` module: `nest/src/observability` (`ObservabilityModule.register`) or `express/src/observability` (`createObservabilityRouter`). Details, shapes and the open security decision: `OBSERVABILITY.md`.
+Every API ships the standard `observability` module: `src/observability` (implement `ObservabilityModule.register` in NestJS or `createObservabilityRouter` in Express). Details, shapes and the open security decision: `docs/OBSERVABILITY.md`.

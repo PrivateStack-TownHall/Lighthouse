@@ -20,7 +20,7 @@ Examples: category 1, NN 01 = API `3101`, UI `5101`, DB `2101`; category 2, NN 0
 - `NN` 01-49 = main projects. `NN` 50-99 = auxiliary services (BFF, worker, aichat). This also keeps clear of Vite's default 5173/5174.
 - A shared database uses the NN of the first API in the group.
 - Only categories 1, 2 and 3 are in scope. Apps in other folders are not touched.
-- Helper: `node scripts/ports.mjs 1 01`
+- Compute ports by concatenating the prefix, category and two-digit NN; check for local collisions before starting.
 - Keep a port registry in your app registry spreadsheet (one row per app).
 
 ## Registry (fill in)

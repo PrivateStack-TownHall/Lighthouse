@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 /**
- * From contract-kit/frontend/src/lib/api-client.ts (converted to JavaScript).
+ * Shared API client for the project workspace.
  * Standard envelope: { success, message, data, meta, error: { code, details }, requestId } (docs/CONVENTIONS.md).
  * Added here, once for the whole app: one silent retry after refreshing the access token (library/integrations/axios.md).
  */

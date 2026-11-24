@@ -81,9 +81,9 @@ describe('configuration model', () => {
     expect(general).toEqual(['Feature "x" is listed twice.']);
   });
 
-  test('hydrate drops tools and old fields of a saved config', () => {
+  test('hydrate preserves optional features while dropping UI-managed legacy fields', () => {
     const c = hydrate({ project: { name: 'x', features: [{ name: 'A' }], category: 3, nn: 2, version: '1.0.0' }, stack: { backend: 'nestjs', tools: ['axios'] } });
-    expect(c.project).not.toHaveProperty('features');
+    expect(sanitize(c).project.features).toEqual([{ name: 'A' }]);
     expect(c.project).not.toHaveProperty('nn');
     expect(c.project.version).toBe('');
     expect(c.stack).not.toHaveProperty('tools');

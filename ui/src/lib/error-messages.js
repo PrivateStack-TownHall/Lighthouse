@@ -1,6 +1,6 @@
 import { ApiError } from './api-client.js';
 
-/** error.code -> message shown in toasts (from contract-kit/frontend/src/lib/error-messages.ts). */
+/** error.code -> message shown in toasts. */
 export const ERROR_MESSAGES = {
   VALIDATION_ERROR: 'Please check the highlighted fields.',
   BAD_REQUEST: 'The request could not be processed.',

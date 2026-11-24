@@ -62,7 +62,7 @@ export function ProjectInfoSection({ config, dispatch, options, errors }) {
         )}
       </Field>
 
-      <Field label="Not in v1 (parking lot)" optional hint="One idea per line. Listed in the documents, not built.">
+      <Field label="Outside the agreed scope" optional hint="One exclusion per line. Documented separately from the requested work.">
         {(a) => <Textarea {...a} className="min-h-12" value={p.parkingLot.join('\n')} onChange={(e) => dispatch({ type: 'parkingLot', value: e.target.value.split('\n') })} placeholder="e.g. Media library" />}
       </Field>
     </div>

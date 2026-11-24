@@ -2,7 +2,7 @@ import { LoaderCircle, CircleAlert, Inbox } from 'lucide-react';
 import { toastMessageFor } from '../lib/error-messages.js';
 import { Button } from './ui/Button.jsx';
 
-/** One shared loading / error / empty treatment (from contract-kit/frontend/src/components/QueryState.tsx). */
+/** One shared loading / error / empty treatment. */
 export function QueryState({ isLoading, error, isEmpty, onRetry, emptyTitle = 'Nothing here yet', emptyHint, children }) {
   if (isLoading) {
     return (

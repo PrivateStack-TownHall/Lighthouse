@@ -33,6 +33,7 @@ export function sanitize(c) {
     project: {
       name: p.name.trim(), slug: p.slug.trim() || slugify(p.name), type: p.type, ...(p.domain && { domain: p.domain }),
       purpose: p.purpose, version: p.version.trim() || '1.0.0', description: p.description.trim(), ...(lot.length && { parkingLot: lot }),
+      ...(p.features !== undefined && { features: p.features }),
       folders: { api: frontend ? null : p.folders.api.trim(), ui: api ? null : p.folders.ui.trim() },
     },
     stack: {
@@ -56,7 +57,7 @@ export function hydrate(config) {
   return {
     ...b, ...config,
     outputCatalogVersion: OUTPUT_CATALOG_VERSION,
-    project: { name: p.name, slug: p.slug, type: p.type, domain: p.domain ?? '', purpose: p.purpose, version: p.version === '1.0.0' ? '' : p.version, description: p.description, parkingLot: p.parkingLot ?? [], folders: { api: p.folders?.api ?? 'api', ui: p.folders?.ui ?? 'ui' } },
+    project: { name: p.name, slug: p.slug, type: p.type, domain: p.domain ?? '', purpose: p.purpose, version: p.version === '1.0.0' ? '' : p.version, description: p.description, ...(p.features !== undefined && { features: p.features }), parkingLot: p.parkingLot ?? [], folders: { api: p.folders?.api ?? 'api', ui: p.folders?.ui ?? 'ui' } },
     stack: Object.fromEntries(Object.entries(stack).map(([key, value]) => [key, value ?? b.stack[key]])),
     customRules: (config?.customRules ?? []).map((r) => ({ reason: '', overrides: [], ...r })),
     outputs: AVAILABLE_OUTPUTS.filter((o) => outputs.includes(o)),

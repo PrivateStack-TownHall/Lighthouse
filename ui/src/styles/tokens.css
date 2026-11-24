@@ -1,5 +1,5 @@
 /*
-  Lighthouse - Contract Kit: tokens (Tailwind CSS v4). Same 4 layers as tokens.css.
+  Lighthouse: tokens (Tailwind CSS v4). Same 4 layers as tokens.css.
   Source colors (from the design system image): Deep Ocean Blue #183B56, Beacon Red #D94B45, Pearl White #F8F6F0.
   The 50-900 scales are DERIVED (tints toward white, shades toward black); the source colors sit at
   blue-800 and red-500. Contrast was computed (WCAG), see docs/DESIGN_SYSTEM.md.

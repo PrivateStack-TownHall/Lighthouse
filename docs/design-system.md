@@ -1,6 +1,6 @@
 # Design system: Lighthouse
 
-- Tokens: `ui/src/styles/tokens.css` = `contract-kit/frontend/src/styles/tokens.lighthouse.css`.
+- Tokens: `ui/src/styles/tokens.css` defines the application palette and semantic tokens.
 - Primary (CTA): `beacon-600` `#CE4742` (white text 4.56:1). Source colours: Deep Ocean Blue `#183B56`, Beacon Red `#D94B45`, Pearl White `#F8F6F0`.
 - Destructive `#B42318`, separate from the CTA red.
 - Fonts: Manrope (UI, headings), Lora (document preview, login wordmark), JetBrains Mono (code). Bundled with @fontsource.

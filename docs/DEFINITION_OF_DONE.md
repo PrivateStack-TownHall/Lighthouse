@@ -1,31 +1,24 @@
-# Definition of Done: Lighthouse – Contract Kit v1
+# Definition of Done: Lighthouse
 
-Purpose: turn a project configuration into a consistent contract package (contract, architecture, prompts) assembled only from the Contract Kit library.
-Category A1, NN 02: API 3102, UI 5102 (no database port: JSON files).
+## Purpose and scope
+Turn project information, a selected technology stack and project rules into consistent, self-contained implementation documents. Completion follows the agreed scope and verification evidence. A feature list and release-stage labels are not required.
 
-## Must-have features (v1 scope)
-1. Project configuration in three accordions (Project Information, Technology Stack, Contract Rules) with presets, in one window.
-2. Live compatibility check against the library (levels, messages, unverified claims, Custom Rule conflict hints).
-3. Output selection and generation for all six outputs, including System Design and Development Standards.
-4. Preview, copy, download, Export ZIP and Export MD.
-5. Automatic save of the configuration in the JSON database; sign-in only when `AUTH_REQUIRED=true`.
+## Acceptance criteria
+- [ ] Project information, stack selection and custom rules can be configured, checked, saved and restored.
+- [ ] Each selected output is generated consistently from the same configuration and library content.
+- [ ] Every project package includes `docs/DEFINITION_OF_DONE.md`, project specifications, applicable implementation guidance and port instructions.
+- [ ] Generated prompts describe code to implement in the target project and do not depend on an external source bundle.
+- [ ] An absent or empty feature list is accepted. Optional feature details survive loading and saving; valid supplied details affect the output.
+- [ ] FR-021 defines completion through scope-based acceptance criteria and verification evidence without a feature count or release freeze.
+- [ ] Definition of Done matches frontend-only, backend-only or full-stack scope; unverified checks start unchecked.
+- [ ] ZIP exports preserve generated files and text exactly. A prompts download includes its supporting specifications. Combined Markdown includes the Definition of Done.
+- [ ] Invalid stack combinations and malformed supplied feature details are rejected; compatibility messages reflect actual documented constraints.
+- [ ] Authentication, authorization, response envelopes and public-data restrictions continue to pass their existing checks.
 
-## Done checklist
-- [x] Follows the response contract (`contract-kit/docs/CONVENTIONS.md`)
-- [x] Scripts match the standard (`dev`, `build`, `start`, `typecheck`, `lint`, `test`, `db:*`)
-- [x] `.env.example` complete; env validated by Zod on boot
-- [x] `/api/health`, `/api/version`, `/api/public` respond; `/monitoring` and `/activities` need ADMIN or STAFF
-- [x] Swagger at `/api/docs` lists every endpoint
-- [x] Tests pass: contract test (20), API tests (14), UI tests (12)
-- [x] `typecheck` and `lint` are clean
-- [x] `CHANGELOG.md` has a `1.0.0` entry
-- [ ] Deployed, and the app registry row is updated (URL, repo link, ports)
+## Verification
+Run `npm test`, `npm run lint`, `npm run typecheck` and `node api/kit/library/validate.mjs`. Regression coverage must exercise projects with no feature list, optional supplied features, each project mode, custom folders, individually selected outputs and a ZIP round trip.
 
-## v1 freeze: parking lot (v1.1)
-- Language per layer (API language and UI language): today one choice for both, so JavaScript + the TypeScript kit front end gives WARN.
-- Generation history screen (the API already has `GET /api/generations`).
-- User management screen (users are created by `npm run db:seed`).
-- A list of saved projects (the API has `GET /api/projects`; the UI keeps one current project).
-- Port group and NN in the form (generated documents show `3CNN` until assigned).
-- Dark mode (tokens exist but are not reviewed).
-- Brickhouse (Application Registry) is a separate app.
+Before declaring an implementation complete, record the commands, exact results, any manual checks, remaining blockers and reasons for not-applicable criteria. Deployment is required only when included in the agreed scope. Generated documents alone do not prove an application has been implemented.
+
+## Scope changes
+Document the requested change, its acceptance criteria and affected checks before implementation. Keep exclusions separate from the requested work; no mandatory future-version buckets apply.

@@ -13,7 +13,7 @@ Four stacks, one mental model. The same words mean the same thing in every stack
 
 **Applies to new projects only.** Existing projects are frozen and are touched only when they need a fix.
 
-> **What is observed vs. proposed.** From the scan of 66 projects: NestJS repos are already uniform (`src/` in all 14, `prisma/` and `test/` in 13), and `src/common/swagger`, `src/common/scope`, `src/prisma`, `src/observability` exist in the Bootcamp repos. Express repos are not uniform (folders per type, `middlewares` vs `middleware`, `tests` vs `test` vs `__tests__`). Front ends: Vite = `src/` + `public/`; Next.js = `src/app` or root `app`, plus `features`, `components`, `lib`. The scan saw only top-level folders, so everything inside `src/` below is a **proposal** built on those hints, not a copy of your repos. Where your Nest repos keep feature modules today (`src/<feature>` or `src/modules/<feature>`) was not visible; this standard picks `src/modules/<feature>`.
+> **What is observed vs. proposed.** From the scan of 66 projects: NestJS repos are already uniform (`src/` in all 14, `prisma/` and `test/` in 13), and `src/common/swagger`, `src/common/scope`, `src/prisma`, `src/observability` exist in the reference repos. Express repos are not uniform (folders per type, `middlewares` vs `middleware`, `tests` vs `test` vs `__tests__`). Front ends: Vite = `src/` + `public/`; Next.js = `src/app` or root `app`, plus `features`, `components`, `lib`. The scan saw only top-level folders, so everything inside `src/` below is a **proposal** built on those hints, not a copy of your repos. Where your Nest repos keep feature modules today (`src/<feature>` or `src/modules/<feature>`) was not visible; this standard picks `src/modules/<feature>`.
 
 ---
 

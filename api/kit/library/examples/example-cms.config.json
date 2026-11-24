@@ -3,8 +3,8 @@
   "generatedOn": "2026-11-23",
   "preset": "custom",
   "project": {
-    "name": "vibeDesk",
-    "slug": "vibedesk",
+    "name": "Example CMS",
+    "slug": "example-cms",
     "category": 3,
     "nn": 2,
     "type": "web-app",
@@ -33,11 +33,11 @@
     ]
   },
   "stack": {
-    "language": "typescript",
-    "frontend": "nextjs",
+    "language": "javascript",
+    "frontend": "react-vite",
     "css": "tailwindcss",
-    "backend": "nestjs",
-    "orm": "prisma",
+    "backend": "express",
+    "orm": "sequelize",
     "database": "postgresql",
     "tools": [
       "axios",

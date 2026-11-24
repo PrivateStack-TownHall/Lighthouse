@@ -6,6 +6,5 @@ dist/
 # JSON database: data, not code (npm run db:setup creates the files)
 database/*.json
 database/*.tmp
-.forgeguard/
 .env.*
 !.env.example

@@ -29,7 +29,7 @@ Summary · 1 System overview (Mermaid + ports) · 2 Repository layout · 3 Backe
 `00-INDEX` · `01-scaffold` · `02-api-foundation` · `03-database` · `04-auth` · `05-ui-foundation` (not for A2) · one `feature-<resource>` per feature · `release-v1`.
 Every step has the same headings: Goal, Read first, Do, Acceptance criteria, Do not, Unverified in this step, Report back.
 
-## Config (`examples/vibedesk.config.json`)
+## Config (`examples/example-cms.config.json`)
 | Field | Rule |
 |---|---|
 | `schemaVersion` | `1` |

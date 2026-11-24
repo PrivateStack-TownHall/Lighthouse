@@ -14,7 +14,7 @@ Single-page **Contract & Prompt Generator**. Configure a project (information, t
 npm run install:all          # installs api/ and ui/
 node scripts/setup-env.mjs   # creates api/.env (random JWT_SECRET) and ui/.env
 # edit api/.env: ADMIN_EMAIL, ADMIN_PASSWORD, ADMIN_NAME
-npm run db:setup             # creates database/*.json, the admin and the example project (vibeDesk)
+npm run db:setup             # creates database/*.json and the admin account
 npm run dev                  # API http://localhost:3102/api  ·  UI http://localhost:5102
 ```
 `npm run setup` does the first four steps in one go. No sign-in is needed by default (`AUTH_REQUIRED=false` in `api/.env`); with `AUTH_REQUIRED=true` the UI asks for the seeded account (`admin@lighthouse.local` / `change-me-please` unless changed).

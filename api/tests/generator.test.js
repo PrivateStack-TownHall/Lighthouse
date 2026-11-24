@@ -9,7 +9,18 @@ let lib;
 let config;
 before(async () => {
   lib = await loadLibrary(kitRoot);
-  config = JSON.parse(await readFile(new URL('../kit/library/examples/vibedesk.config.json', import.meta.url), 'utf8'));
+  config = JSON.parse(await readFile(new URL('../kit/library/examples/example-cms.config.json', import.meta.url), 'utf8'));
+});
+
+test('example packages use the neutral project identity', async () => {
+  for (const filename of ['example-cms.config.json', 'example-cms-nest-next.config.json']) {
+    const request = JSON.parse(await readFile(new URL(`../kit/library/examples/${filename}`, import.meta.url), 'utf8'));
+    assert.equal(request.project.name, 'Example CMS');
+    const result = generate(request, lib);
+    assert.equal(result.ok, true, JSON.stringify(result.errors));
+    assert.match(result.files['PROJECT_CONTRACT.md'], /# Project Contract: Example CMS/);
+    assert.equal(JSON.parse(result.files['lighthouse.config.json']).project.slug, 'example-cms');
+  }
 });
 
 test('frontend-only generates every selected document without local backend scaffolding', () => {

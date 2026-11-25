@@ -1,5 +1,7 @@
 # Definition of Done: Lighthouse
 
+This checklist is for the Lighthouse application itself. It is not exported to generated projects. The source for a generated project's Definition of Done is `api/kit/docs/DEFINITION_OF_DONE.md`, combined with the selected project configuration by the generator.
+
 ## Purpose and scope
 Turn project information, a selected technology stack and project rules into consistent, self-contained implementation documents. Completion follows the agreed scope and verification evidence. A feature list and release-stage labels are not required.
 

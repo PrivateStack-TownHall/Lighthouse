@@ -1,5 +1,7 @@
 # Definition of Done
 
+This is a source template for generated projects, not Lighthouse's own completion checklist. The generator combines its applicable sections with the selected project's purpose, rules and verification criteria to create `docs/DEFINITION_OF_DONE.md` inside the exported package.
+
 Completion is measured against the project purpose, agreed scope and evidence below. A feature list is optional; there is no required feature count or release-stage freeze.
 
 ## Before implementation

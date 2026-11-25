@@ -38,6 +38,15 @@ lighthouse/
 └─ CHANGELOG.md
 ```
 
+The two `docs/` directories have different owners:
+
+| Location | Purpose | Exported? |
+|---|---|---|
+| `docs/` | Documentation and acceptance criteria for Lighthouse itself | No |
+| `api/kit/docs/` | Source rules and templates used by the generator | Applicable content is adapted into the generated project's `docs/` |
+
+The generated `docs/DEFINITION_OF_DONE.md` is assembled from `api/kit/docs/DEFINITION_OF_DONE.md` and the selected project configuration. The root `docs/DEFINITION_OF_DONE.md` is not its source.
+
 ## Data and sign-in
 - The current configuration is saved automatically in `database/projects.json` and restored on the next visit; every generation is logged in `database/generations.json`.
 - `AUTH_REQUIRED=false` (default): local tool, no sign-in. `AUTH_REQUIRED=true`: the generator and projects follow the auth contract (ADMIN and STAFF write, USER reads). `/api/monitoring` and `/api/activities` always need ADMIN or STAFF (FR-006).

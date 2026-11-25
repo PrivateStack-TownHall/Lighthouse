@@ -32,12 +32,62 @@ test('frontend-only generates every selected document without local backend scaf
     for (const output of OUTPUTS.filter((id) => id.endsWith('.md'))) assert.ok(result.files[output], output);
     assert.ok(result.files['PROMPTS/01-scaffold.md']);
     assert.match(result.files['ARCHITECTURE.md'], /client\//);
+    if (frontend === 'react-vite') {
+      assert.match(result.files['ARCHITECTURE.md'], /[├└]─ ui\/\s+# primitives/);
+      assert.doesNotMatch(result.files['ARCHITECTURE.md'], /[├└]─ client\/\s+# primitives/);
+    }
+    assert.match(result.files['SYSTEM_DESIGN.md'], /components\/ui\//);
     assert.doesNotMatch(Object.values(result.files).filter((value) => typeof value === 'string').join('\n'), /api\/src|db:migrate|DATABASE_URL=|JWT_SECRET=/);
     assert.ok(Object.keys(result.files).filter((file) => file.startsWith('PROMPTS/')).every((file) => !/database|api-foundation|\d+-auth/.test(file)));
     assert.deepEqual(generate(request, lib).files, result.files);
     const manifest = JSON.parse(result.files['lighthouse.manifest.json']);
     assert.ok(manifest.docs.every((doc) => !['express', 'nestjs', 'prisma', 'sequelize', 'postgresql', 'bcryptjs', 'jsonwebtoken'].includes(doc.id)));
   }
+});
+
+test('FR-015 port assignments drive API-only documents and reject ambiguous values', () => {
+  const request = { ...config, preset: 'custom', project: { ...config.project, type: 'api', category: undefined, nn: undefined, folders: { api: 'core', ui: null } },
+    stack: { language: 'typescript', frontend: null, css: null, backend: 'nestjs', orm: 'prisma', database: 'postgresql', tools: [] },
+    customRules: [{ text: 'API: 3200\nDB: 2200', overrides: ['FR-015'], reason: 'Custom number' }], outputs: OUTPUTS };
+  const result = generate(request, lib);
+  assert.equal(result.ok, true, JSON.stringify(result.errors));
+  assert.match(result.files['PROJECT_CONTRACT.md'], /Base URL: `http:\/\/localhost:3200\/api`/);
+  assert.match(result.files['PROJECT_CONTRACT.md'], /API 3200 · DB 2200/);
+  assert.match(result.files['MASTER_PROMPT.md'], /PORT=3200/);
+  assert.match(result.files['MASTER_PROMPT.md'], /localhost:2200/);
+  assert.match(result.files['PROMPTS/01-scaffold.md'], /Use API 3200 and database 2200/);
+  assert.match(result.files['docs/PORTS.md'], /Assigned by FR-015 override/);
+  assert.doesNotMatch(result.files['SYSTEM_DESIGN.md'], /:3CNN|:2CNN/);
+  for (const text of ['API: nope\nDB: 2200', 'API: 3200\nDB: 3200', 'API: 70000\nDB: 2200']) {
+    const invalid = generate({ ...request, customRules: [{ ...request.customRules[0], text }] }, lib);
+    assert.equal(invalid.ok, false, text);
+  }
+});
+
+test('FR-015 assigns only the ports applicable to web and frontend projects', () => {
+  const web = generate({ ...config, preset: 'custom', customRules: [{ text: 'API: 3109\nUI: 5109\nDB: 2109', overrides: ['FR-015'], reason: 'Assigned ports' }] }, lib);
+  assert.equal(web.ok, true, JSON.stringify(web.errors));
+  assert.match(web.files['PROJECT_CONTRACT.md'], /API 3109 · UI 5109 · DB 2109/);
+  assert.match(web.files['PROMPTS/01-scaffold.md'], /Use API 3109, UI 5109 and database 2109/);
+  assert.match(web.files['docs/PORTS.md'], /Assigned by FR-015 override/);
+  const frontend = generate({ ...config, preset: 'custom', project: { ...config.project, type: 'frontend', category: undefined, nn: undefined, folders: { ui: 'robot', api: null } },
+    stack: { language: 'typescript', frontend: 'react-vite', css: 'tailwindcss', backend: null, orm: null, database: null, tools: [] },
+    customRules: [{ text: 'UI: 5307', overrides: ['FR-015'], reason: 'Assigned frontend port' }], outputs: OUTPUTS }, lib);
+  assert.equal(frontend.ok, true, JSON.stringify(frontend.errors));
+  assert.match(frontend.files['PROJECT_CONTRACT.md'], /Frontend development port: `5307`/);
+  assert.match(frontend.files['docs/PORTS.md'], /Assigned: 5307/);
+  assert.doesNotMatch(frontend.files['ARCHITECTURE.md'], /components\/robot\//);
+});
+
+test('project identity follows each configuration without carrying another project name', () => {
+  const first = generate({ ...config, project: { ...config.project, name: 'Pearl Forager', slug: 'pearl-forager', description: 'Pearl discovery workspace' } }, lib);
+  const second = generate({ ...config, project: { ...config.project, name: 'AIssistante', slug: 'aissistante', description: 'Robot assistant interface' } }, lib);
+  assert.equal(first.ok, true);
+  assert.equal(second.ok, true);
+  assert.match(first.files['PROJECT_CONTRACT.md'], /Pearl discovery workspace/);
+  assert.doesNotMatch(first.files['PROJECT_CONTRACT.md'], /Robot assistant interface/);
+  assert.match(second.files['PROJECT_CONTRACT.md'], /Robot assistant interface/);
+  assert.doesNotMatch(second.files['PROJECT_CONTRACT.md'], /Pearl discovery workspace/);
 });
 
 test('custom folders appear in full-stack and backend-only output without changing API routes', () => {

@@ -142,6 +142,21 @@ export function validateConfig(c, lib) {
       req(typeof r.reason === 'string' && r.reason.trim(), `\`customRules[${i}]\` changes ${id}: a Fixed Rule cannot be changed silently, give a \`reason\`.`);
     }
   }
+  const portEntries = (c.customRules ?? []).filter((r) => r?.overrides?.includes('FR-015'))
+    .flatMap((r) => String(r.text ?? '').split(/\r?\n/).map((line) => line.trim()).filter((line) => /^(API|UI|DB)\s*:/i.test(line)));
+  const customPorts = new Map();
+  for (const entry of portEntries) {
+    const match = entry.match(/^(API|UI|DB)\s*:\s*(\d{1,5})$/i);
+    if (!match || Number(match[2]) < 1 || Number(match[2]) > 65535) {
+      e.push(`Invalid FR-015 port assignment "${entry}"; use API, UI or DB followed by a port from 1 to 65535.`);
+      continue;
+    }
+    const layer = match[1].toLowerCase();
+    if ((p.type === 'api' && layer === 'ui') || (p.type === 'frontend' && layer !== 'ui')) e.push(`FR-015 port ${layer.toUpperCase()} does not apply to a ${p.type} project.`);
+    if (customPorts.has(layer)) e.push(`FR-015 port ${layer.toUpperCase()} is assigned more than once.`);
+    customPorts.set(layer, match[2]);
+  }
+  if (new Set(customPorts.values()).size !== customPorts.size) e.push('FR-015 API, UI and DB ports must be distinct.');
   for (const o of c.outputs ?? OUTPUTS) req(OUTPUTS.includes(o), `Unknown or not yet implemented output "${o}". Available: ${OUTPUTS.join(', ')}.`);
   return e;
 }
@@ -213,7 +228,10 @@ export function generate(config, lib) {
   if (outputs.length) Object.assign(files, renderSupportingDocuments(ctx, lib));
   const folders = { api: config.project.folders?.api ?? 'api', ui: config.project.folders?.ui ?? 'ui' };
   for (const key of Object.keys(files)) files[key] = files[key]
-    .replace(/(?<![\w/.-])(api|ui)\//g, (_, layer) => `${folders[layer]}/`)
+    .replace(/(?<![\w/.-])(api|ui)\//g, (match, layer, offset, content) => {
+      const linePrefix = content.slice(content.lastIndexOf('\n', offset) + 1, offset);
+      return /^[│ ]+[├└]─\s*$/.test(linePrefix) ? match : `${folders[layer]}/`;
+    })
     .replace(/\b(npm --prefix|cd) (api|ui)(?=[\s`"';]|$)/g, (_, command, layer) => `${command} ${folders[layer]}`)
     .replaceAll('__LIGHTHOUSE_API_FOLDER__', folders.api).replaceAll('__LIGHTHOUSE_UI_FOLDER__', folders.ui);
   const manifest = {
@@ -231,12 +249,22 @@ function buildContext(c, lib, st, rules, level, problems) {
   const hash = fnv1a(canonical(c) + KIT_VERSION);
   const hasUi = p.type !== 'api';
   // Ports come from the port group (A1/A2/A3) and NN. Without them the pattern stays visible (3CNN...): never invented.
-  const portsAssigned = p.category !== undefined && p.nn !== undefined;
-  const nn = portsAssigned ? String(p.nn).padStart(2, '0') : 'NN';
-  const ports = portsAssigned
+  const portGroupAssigned = p.category !== undefined && p.nn !== undefined;
+  const nn = portGroupAssigned ? String(p.nn).padStart(2, '0') : 'NN';
+  const ports = portGroupAssigned
     ? { api: `3${p.category}${nn}`, ui: hasUi ? `5${p.category}${nn}` : null, db: `2${p.category}${nn}` }
     : { api: '3CNN', ui: hasUi ? '5CNN' : null, db: '2CNN' };
-  const sub = (t) => (portsAssigned ? t.replace(/3CNN/g, ports.api).replace(/2CNN/g, ports.db).replace(/5CNN/g, ports.ui ?? '5CNN') : t);
+  let customPortAssigned = false;
+  for (const r of c.customRules ?? []) if (r.overrides?.includes('FR-015')) {
+    for (const line of r.text.split(/\r?\n/)) {
+      const match = line.trim().match(/^(API|UI|DB)\s*:\s*(\d{1,5})$/i);
+      if (match) { ports[match[1].toLowerCase()] = match[2]; customPortAssigned = true; }
+    }
+  }
+  const applicablePorts = p.type === 'frontend' ? ['ui'] : ['api', 'db', ...(hasUi ? ['ui'] : [])];
+  const portsAssigned = applicablePorts.every((layer) => /^\d+$/.test(ports[layer]));
+  const portGroupLabel = portGroupAssigned ? `${CATEGORY[p.category]}, NN ${nn}${customPortAssigned ? ' (FR-015 override)' : ''}` : portsAssigned ? 'Custom ports (FR-015 override)' : 'Choose available local ports using docs/PORTS.md';
+  const sub = (t) => t.replace(/3CNN/g, ports.api).replace(/2CNN/g, ports.db).replace(/5CNN/g, ports.ui ?? '5CNN');
   const docIds = [...new Set(['core-rules', ...st.ids, ...(st.combo ? [st.combo.id] : [])])];
   const order = [s.language, s.backend, s.orm, s.database, ...(st.combo ? [st.combo.id] : []), s.frontend, s.css, ...coreTools(c, compat), ...st.tools].filter(Boolean);
   const instructionIds = [...new Set(order)].filter((i) => docs[i]);
@@ -294,7 +322,7 @@ function buildContext(c, lib, st, rules, level, problems) {
   const vars = {
     'project.name': p.name,
     'project.table': ['| Field | Value |', '|---|---|', `| Name | ${p.name} |`, `| Slug | \`${p.slug}\` |`,
-      `| Category | ${p.domain ? DOMAINS[p.domain] : 'Not set'} |`, `| Type | ${TYPES[p.type]} |`, `| Port group | ${portsAssigned ? `${CATEGORY[p.category]}, NN ${nn}` : 'Choose available local ports using docs/PORTS.md'} |`, `| Purpose | ${PURPOSES[p.purpose]} |`, `| Version | ${p.version} |`].join('\n'),
+      `| Category | ${p.domain ? DOMAINS[p.domain] : 'Not set'} |`, `| Type | ${TYPES[p.type]} |`, `| Port group | ${portGroupLabel} |`, `| Purpose | ${PURPOSES[p.purpose]} |`, `| Version | ${p.version} |`].join('\n'),
     'project.description': p.description,
     'project.features': features.length ? numbered(features.map((f) => `**${f.name}**${f.resource && p.type !== 'frontend' ? ` (\`/api/${f.resource}\`)` : ''}: ${f.description}`))
       : `${p.description}\n\nA separate feature list is optional. Derive acceptance criteria from this purpose and the applicable custom rules in \`docs/DEFINITION_OF_DONE.md\`; resolve material ambiguities before implementation.`,
@@ -307,7 +335,7 @@ function buildContext(c, lib, st, rules, level, problems) {
     'rules.fixed': fixed, 'stack.instructions': instructions, 'rules.custom': custom,
     'unverified.all': bullets(unverifiedAll, 'Nothing: every included document is verified.'),
   };
-  return { c, p, s, st, lib, keep, hash, ports, portsAssigned, hasUi, sub, name, docIds, features, access, header, vars, rules, unverifiedFor };
+  return { c, p, s, st, lib, keep, hash, ports, portsAssigned, portGroupAssigned, customPortAssigned, portGroupLabel, hasUi, sub, name, docIds, features, access, header, vars, rules, unverifiedFor };
 }
 
 // ---------------------------------------------------------------- PROMPTS/
@@ -466,7 +494,7 @@ function renderSupportingDocuments(ctx, lib) {
       '## Evidence and scope changes', section(instructions, 'Evidence and scope changes')].join('\n\n') + '\n',
     'docs/PORTS.md': frontendOnly
       ? `# Frontend port\n\nUse an available UI development port. ${ctx.portsAssigned ? `Assigned: ${ctx.ports.ui}.` : 'For the 5CNN scheme, C is category 1 or 3 and NN is a two-digit project number; choose available values and replace the marker before running the application.'} Record the chosen value in the README. No local server or database is required.\n`
-      : lib.kitDocs['PORTS.md'],
+      : `${lib.kitDocs['PORTS.md'].trim()}\n\n## This project\n\nAPI: \`${ctx.ports.api}\` · ${ctx.hasUi ? `UI: \`${ctx.ports.ui}\` · ` : ''}DB: \`${ctx.ports.db}\`. ${ctx.customPortAssigned ? 'Assigned by FR-015 override.' : ctx.portGroupAssigned ? 'Assigned from the category and project number.' : 'Assign unresolved ports before running services.'}\n`,
   };
   if (frontendOnly) {
     Object.assign(files, Object.fromEntries(Object.entries(renderFrontend({ ...ctx, c: { ...ctx.c, outputs: ['PROJECT_CONTRACT.md', 'ARCHITECTURE.md'] } }, lib)).map(([path, content]) => [`docs/${path}`, content])));
@@ -614,7 +642,7 @@ function renderProjectContract(ctx, lib) {
     ...vars, header: ctx.header('PROJECT_CONTRACT.md'),
     'project.info': ['| Field | Value |', '|---|---|', `| Project Name | ${p.name} |`, `| Project Type | ${TYPES[p.type]} |`, `| Project Purpose | ${PURPOSES[p.purpose]} |`,
       `| Project Version | ${p.version} |`, `| Category | ${p.domain ? DOMAINS[p.domain] : 'Not set'} |`, `| Repository | \`${p.slug}/\` |`,
-      `| Port group | ${ctx.portsAssigned ? `${CATEGORY[p.category]}, NN ${String(p.nn).padStart(2, '0')}` : 'Assign using docs/PORTS.md'} |`,
+      `| Port group | ${ctx.portGroupLabel} |`,
       `| Ports | API ${ports.api}${hasUi ? ` · UI ${ports.ui}` : ''} · DB ${ports.db} |`].join('\n'),
     'api.baseUrl': api, 'api.endpoints': endpoints, 'api.endpointNotes': notes,
     'conv.envelope': section(conv, 1), 'conv.query': section(conv, 3), 'conv.auth': section(conv, 5), 'conv.data': section(conv, 4),

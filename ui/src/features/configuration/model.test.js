@@ -1,5 +1,5 @@
 import { describe, expect, test } from 'vitest';
-import { AVAILABLE_OUTPUTS, defaultConfig, errorsByPath, hydrate, reducer, sanitize, UI_TOOLS } from './model.js';
+import { AVAILABLE_OUTPUTS, defaultConfig, errorsByPath, hydrate, portRuleNotes, portRuleValues, reducer, sanitize, UI_TOOLS, updatePortRuleNotes, updatePortRuleText } from './model.js';
 
 describe('configuration model', () => {
   test('defaults: Lighthouse 123, CMS, no features, fixed UI tools', () => {
@@ -37,6 +37,22 @@ describe('configuration model', () => {
     expect(full.stack.backend).toBe('express');
     expect(full.project.folders).toEqual({ api: 'api', ui: 'client' });
     expect(hydrate({}).project.folders).toEqual({ api: 'api', ui: 'ui' });
+  });
+
+  test('port override fields preserve roles and survive save and restore', () => {
+    let c = reducer(defaultConfig(), { type: 'addRule' });
+    c = reducer(c, { type: 'rule', index: 0, patch: { overrides: ['FR-015'], reason: 'Assigned locally' } });
+    c = reducer(c, { type: 'rule', index: 0, patch: { text: updatePortRuleText(c.customRules[0].text, 'api', '3200') } });
+    c = reducer(c, { type: 'rule', index: 0, patch: { text: updatePortRuleText(c.customRules[0].text, 'db', '2200') } });
+    c = reducer(c, { type: 'folder', layer: 'ui', value: 'robot' });
+    const saved = sanitize(c);
+    expect(saved.project.folders).toEqual({ api: 'api', ui: 'robot' });
+    expect(saved.customRules[0].text).toBe('API: 3200\nDB: 2200');
+    expect(portRuleValues(hydrate(saved).customRules[0].text)).toEqual({ api: '3200', db: '2200' });
+    expect(portRuleNotes(updatePortRuleNotes(saved.customRules[0].text, 'Use dedicated local ports.'))).toBe('Use dedicated local ports.');
+    expect(updatePortRuleText('API: 3200\nDB: 2200', 'api', '')).toBe('DB: 2200');
+    const pending = reducer(reducer(defaultConfig(), { type: 'addRule' }), { type: 'rule', index: 0, patch: { overrides: ['FR-015'], reason: 'Assigned locally' } });
+    expect(sanitize(pending).customRules).toEqual([{ text: '', overrides: ['FR-015'], reason: 'Assigned locally' }]);
   });
 
   test('slug follows the name until edited', () => {

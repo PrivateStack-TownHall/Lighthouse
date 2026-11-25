@@ -45,10 +45,10 @@ export function ProjectInfoSection({ config, dispatch, options, errors }) {
       </div>
 
       <div className="grid gap-3 sm:grid-cols-2">
-        {p.type !== 'frontend' && <Field label="Backend folder" required error={err('folders.api')} hint="Folder name only, e.g. backend.">
+        {p.type !== 'frontend' && <Field label="Backend (API) folder" required error={err('folders.api')} hint="Root folder for backend code; the name can change without changing its role.">
           {(a) => <Input {...a} icon={Folder} value={p.folders.api} maxLength={64} onChange={(e) => dispatch({ type: 'folder', layer: 'api', value: e.target.value })} placeholder="api" />}
         </Field>}
-        {p.type !== 'api' && <Field label="Frontend folder" required error={err('folders.ui')} hint="Folder name only, e.g. frontend.">
+        {p.type !== 'api' && <Field label="Frontend (UI) folder" required error={err('folders.ui')} hint="Root folder for frontend code; the name can change without changing its role.">
           {(a) => <Input {...a} icon={Folder} value={p.folders.ui} maxLength={64} onChange={(e) => dispatch({ type: 'folder', layer: 'ui', value: e.target.value })} placeholder="ui" />}
         </Field>}
       </div>

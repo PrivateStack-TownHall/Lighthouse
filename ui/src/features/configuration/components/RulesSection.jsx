@@ -4,12 +4,15 @@ import { Textarea, Input, Select } from '../../../components/ui/inputs.jsx';
 import { Button } from '../../../components/ui/Button.jsx';
 import { Badge } from '../../../components/ui/Badge.jsx';
 import { RichText } from '../../../components/ui/RichText.jsx';
+import { portRuleNotes, portRuleValues, updatePortRuleNotes, updatePortRuleText } from '../model.js';
 
 export function RulesSection({ config, dispatch, options, check, errors }) {
   const [showAll, setShowAll] = useState(false);
   const hints = (i) => (check?.problems ?? []).filter((p) => p.message.startsWith(`CR-${String(i + 1).padStart(3, '0')} `));
   const overriddenBy = (id) => config.customRules.map((r, i) => ((r.overrides ?? []).includes(id) ? `CR-${String(i + 1).padStart(3, '0')}` : null)).filter(Boolean);
   const rules = showAll ? options.fixedRules : options.fixedRules.slice(0, 6);
+  const portLayers = config.project.type === 'frontend' ? ['ui'] : config.project.type === 'api' ? ['api', 'db'] : ['api', 'ui', 'db'];
+  const portLabels = { api: 'Backend (API) port', ui: 'Frontend (UI) port', db: 'Database port' };
 
   return (
     <div className="flex flex-col gap-6">
@@ -55,7 +58,19 @@ export function RulesSection({ config, dispatch, options, check, errors }) {
               <li key={i} className="rounded-lg border border-border bg-background/60 p-3">
                 <div className="flex items-start gap-3">
                   <code className="mt-2 font-mono text-xs font-bold text-brand-800">{id}</code>
-                  <Textarea className="min-h-14 flex-1" aria-label={`${id} text`} value={r.text} onChange={(e) => dispatch({ type: 'rule', index: i, patch: { text: e.target.value } })} placeholder="e.g. Article slugs are unique and created with slugify from helpers/." />
+                  {r.overrides?.includes('FR-015') ? (
+                    <div className="grid flex-1 gap-2 sm:grid-cols-2">
+                      {portLayers.map((layer) => <label key={layer} className="text-xs font-semibold text-foreground">
+                        {portLabels[layer]}
+                        <Input className="mt-1" type="text" inputMode="numeric" aria-label={`${id} ${layer} port`} value={portRuleValues(r.text)[layer] ?? ''}
+                          onChange={(e) => dispatch({ type: 'rule', index: i, patch: { text: updatePortRuleText(r.text, layer, e.target.value) } })} placeholder={{ api: '3200', ui: '5200', db: '2200' }[layer]} />
+                      </label>)}
+                      <label className="text-xs font-semibold text-foreground sm:col-span-2">Additional rule details
+                        <Textarea className="mt-1 min-h-14" aria-label={`${id} notes`} value={portRuleNotes(r.text)}
+                          onChange={(e) => dispatch({ type: 'rule', index: i, patch: { text: updatePortRuleNotes(r.text, e.target.value) } })} placeholder="Optional context for the port override." />
+                      </label>
+                    </div>
+                  ) : <Textarea className="min-h-14 flex-1" aria-label={`${id} text`} value={r.text} onChange={(e) => dispatch({ type: 'rule', index: i, patch: { text: e.target.value } })} placeholder="e.g. Article slugs are unique and created with slugify from helpers/." />}
                   <button type="button" onClick={() => dispatch({ type: 'removeRule', index: i })} className="mt-1 rounded-lg p-2 text-muted-foreground hover:bg-destructive/10 hover:text-destructive" aria-label={`Remove ${id}`}>
                     <Trash2 className="size-4" />
                   </button>
@@ -69,6 +84,7 @@ export function RulesSection({ config, dispatch, options, check, errors }) {
                     <Input aria-label={`${id} reason`} aria-invalid={reasonError ? true : undefined} value={r.reason ?? ''} onChange={(e) => dispatch({ type: 'rule', index: i, patch: { reason: e.target.value } })} placeholder="Reason (required to override a Fixed Rule)" />
                   )}
                 </div>
+                {r.overrides?.includes('FR-017') && <p className="mt-2 pl-14 text-xs text-muted-foreground">Root folder names are set in Project Information: {config.project.type !== 'frontend' && <>backend (API) is {config.project.folders.api}</>}{config.project.type === 'web-app' && ' and '}{config.project.type !== 'api' && <>frontend (UI) is {config.project.folders.ui}</>}. Renaming these folders keeps their roles; override FR-017 only to change their internal structure.</p>}
                 {reasonError && <p className="mt-1 pl-14 text-xs text-destructive">{reasonError}</p>}
                 {hints(i).map((h, k) => (
                   <p key={k} className="mt-2 flex gap-2 rounded-md bg-warning/20 px-3 py-2 pl-3 text-xs text-warning-foreground">

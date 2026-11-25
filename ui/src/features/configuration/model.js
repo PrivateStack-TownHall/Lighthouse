@@ -6,6 +6,33 @@ const OUTPUT_CATALOG_VERSION = 2;
 const NEW_OUTPUTS = ['SYSTEM_DESIGN.md', 'DEVELOPMENT_STANDARDS.md'];
 /** Every UI project uses these; they are not a choice in the form. */
 export const UI_TOOLS = ['axios', 'tanstack-query'];
+const PORT_LABELS = { api: 'API', ui: 'UI', db: 'DB' };
+const portLine = /^(API|UI|DB)\s*:\s*(.*)$/i;
+
+export function portRuleValues(text = '') {
+  const values = {};
+  for (const line of text.split(/\r?\n/)) {
+    const match = line.trim().match(portLine);
+    if (match) values[match[1].toLowerCase()] = match[2];
+  }
+  return values;
+}
+
+export function updatePortRuleText(text = '', layer, value) {
+  const values = portRuleValues(text);
+  values[layer] = value.trim();
+  const notes = text.split(/\r?\n/).filter((line) => !portLine.test(line.trim()) && line.trim());
+  return [...Object.entries(PORT_LABELS).filter(([key]) => values[key]).map(([key, label]) => `${label}: ${values[key]}`), ...notes].join('\n');
+}
+
+export function portRuleNotes(text = '') {
+  return text.split(/\r?\n/).filter((line) => !portLine.test(line.trim())).join('\n').trim();
+}
+
+export function updatePortRuleNotes(text = '', notes = '') {
+  const values = portRuleValues(text);
+  return [...Object.entries(PORT_LABELS).filter(([key]) => values[key]).map(([key, label]) => `${label}: ${values[key]}`), notes.trim()].filter(Boolean).join('\n');
+}
 
 export const defaultConfig = () => ({
   schemaVersion: 1,
@@ -40,7 +67,7 @@ export function sanitize(c) {
       language: c.stack.language, frontend: api ? null : c.stack.frontend, css: api ? null : c.stack.css,
       backend: frontend ? null : c.stack.backend, orm: frontend ? null : c.stack.orm, database: frontend ? null : c.stack.database, tools: api ? [] : [...UI_TOOLS],
     },
-    customRules: c.customRules.filter((r) => r.text.trim()).map((r) => ({
+    customRules: c.customRules.filter((r) => r.text.trim() || r.overrides?.length).map((r) => ({
       text: r.text.trim(), ...(r.overrides?.length && { overrides: r.overrides, reason: r.reason?.trim() ?? '' }),
     })),
     outputs: c.outputs.filter((o) => AVAILABLE_OUTPUTS.includes(o)),

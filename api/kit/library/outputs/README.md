@@ -42,6 +42,9 @@ Every step has the same headings: Goal, Read first, Do, Acceptance criteria, Do 
 | `customRules` | `text`, optional `overrides` (Fixed Rule ids) + `reason` (required when overriding) |
 | `outputs` | subset of the implemented outputs |
 
+For a concrete FR-015 port override, put `API: 3200`, `DB: 2200` and, when applicable, `UI: 5200` on separate lines in the rule text. These values replace port markers throughout the generated project documents. An invalid or conflicting port assignment stops generation.
+`project.folders.api` and `project.folders.ui` name the backend and frontend root folders. Changing either name keeps its role; FR-017 overrides are for changes to the internal architecture.
+
 ## Validation
 | Situation | Result |
 |---|---|

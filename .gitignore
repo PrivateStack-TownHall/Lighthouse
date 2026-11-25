@@ -8,3 +8,4 @@ database/*.json
 database/*.tmp
 .env.*
 !.env.example
+docs/generated-results

@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { AnimatePresence, motion } from 'framer-motion';
-import { CircleCheck, Info, TriangleAlert, OctagonX, ChevronDown, BookOpen, LoaderCircle } from 'lucide-react';
+import { CircleCheck, Info, TriangleAlert, OctagonX, BookOpen, LoaderCircle } from 'lucide-react';
+import { DisclosureButton } from '../../../components/ui/DisclosureButton.jsx';
 import { LevelBadge } from '../../../components/ui/Badge.jsx';
 import { RichText } from '../../../components/ui/RichText.jsx';
 
@@ -38,11 +39,11 @@ export function CompatibilityPanel({ check, levels, loading }) {
       )}
       {check.ok && (
         <div className="mt-3 border-t border-border pt-3">
-          <button type="button" onClick={() => setShowDocs(!showDocs)} className="flex w-full items-center gap-2 text-left text-xs font-semibold text-brand-800">
+          <DisclosureButton open={showDocs} onToggle={() => setShowDocs(open => !open)} chevronClassName="ml-auto size-4"
+            className="flex w-full items-center gap-2 text-left text-xs font-semibold text-brand-800">
             <BookOpen className="size-4" aria-hidden />
             {check.docs.length} library documents · {unverified} unverified claims
-            <ChevronDown className={`ml-auto size-4 transition-transform ${showDocs ? 'rotate-180' : ''}`} aria-hidden />
-          </button>
+          </DisclosureButton>
           <AnimatePresence initial={false}>
             {showDocs && (
               <motion.ul initial={{ height: 0, opacity: 0 }} animate={{ height: 'auto', opacity: 1 }} exit={{ height: 0, opacity: 0 }} className="mt-2 grid gap-1 overflow-hidden sm:grid-cols-2">

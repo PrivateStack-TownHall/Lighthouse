@@ -1,5 +1,6 @@
 import { useState } from 'react';
-import { CircleCheck, FileClock, TriangleAlert, ChevronDown } from 'lucide-react';
+import { CircleCheck, FileClock, TriangleAlert } from 'lucide-react';
+import { DisclosureButton } from '../../../components/ui/DisclosureButton.jsx';
 import { LevelBadge } from '../../../components/ui/Badge.jsx';
 import { RichText } from '../../../components/ui/RichText.jsx';
 import { formatBytes } from '../../../helpers/index.js';
@@ -16,9 +17,10 @@ export function ResultSummary({ result, stale }) {
       </div>
       {result?.problems.length > 0 && (
         <>
-          <button type="button" onClick={() => setOpen(!open)} aria-expanded={open} className="mt-1 flex items-center gap-1 text-[10px] font-semibold text-brand-800">
-            {result.problems.length} note{result.problems.length > 1 ? 's' : ''} <ChevronDown className={`size-3.5 transition-transform ${open ? 'rotate-180' : ''}`} aria-hidden />
-          </button>
+          <DisclosureButton open={open} onToggle={() => setOpen(value => !value)} chevronClassName="size-3.5"
+            className="mt-1 flex items-center gap-1 text-[10px] font-semibold text-brand-800">
+            {result.problems.length} note{result.problems.length > 1 ? 's' : ''}
+          </DisclosureButton>
           {open && <ul className="mt-1 list-disc pl-5 text-xs text-muted-foreground">{result.problems.map((p, i) => <li key={i}><RichText text={`[${p.level}] ${p.message}`} /></li>)}</ul>}
         </>
       )}

@@ -1,7 +1,8 @@
 import { useState } from 'react';
 import { Layers, Target, Tags, Folder } from 'lucide-react';
 import { Field } from '../../../components/ui/Field.jsx';
-import { Input, Select, Textarea } from '../../../components/ui/inputs.jsx';
+import { Input, Textarea } from '../../../components/ui/inputs.jsx';
+import { SelectField } from '../../../components/ui/SelectField.jsx';
 
 export function ProjectInfoSection({ config, dispatch, options, errors }) {
   const p = config.project;
@@ -15,30 +16,15 @@ export function ProjectInfoSection({ config, dispatch, options, errors }) {
         <Field label="Project Name" required error={err('name')}>
           {(a) => <Input {...a} value={p.name} maxLength={60} onChange={set('name')} placeholder="e.g. Lighthouse 123" />}
         </Field>
-        <Field label="Project Type" required error={err('type')}>
-          {(a) => (
-            <Select {...a} icon={Layers} value={p.type} onChange={set('type')}>
-              {options.types.map((t) => <option key={t.id} value={t.id}>{t.label}</option>)}
-            </Select>
-          )}
-        </Field>
-        <Field label="Project Purpose" required error={err('purpose')}>
-          {(a) => (
-            <Select {...a} icon={Target} value={p.purpose} onChange={set('purpose')}>
-              {options.purposes.map((t) => <option key={t.id} value={t.id}>{t.label}</option>)}
-            </Select>
-          )}
-        </Field>
+        <SelectField label="Project Type" required error={err('type')} icon={Layers}
+          options={options.types} value={p.type} onChange={set('type')} />
+        <SelectField label="Project Purpose" required error={err('purpose')} icon={Target}
+          options={options.purposes} value={p.purpose} onChange={set('purpose')} />
         <Field label="Project Version" optional error={err('version')}>
           {(a) => <Input {...a} value={p.version} onChange={set('version')} placeholder="e.g. 1.0.0" />}
         </Field>
-        <Field label="Category" required error={err('domain')}>
-          {(a) => (
-            <Select {...a} icon={Tags} value={p.domain} onChange={set('domain')}>
-              {options.domains.map((t) => <option key={t.id} value={t.id}>{t.label}</option>)}
-            </Select>
-          )}
-        </Field>
+        <SelectField label="Category" required error={err('domain')} icon={Tags}
+          options={options.domains} value={p.domain} onChange={set('domain')} />
         <Field label="Slug" required error={err('slug')} hint="Repository folder name.">
           {(a) => <Input {...a} value={p.slug} onChange={(e) => { setSlugTouched(true); dispatch({ type: 'project', field: 'slug', value: e.target.value }); }} placeholder="lighthouse-123" />}
         </Field>
